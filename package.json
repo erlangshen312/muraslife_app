@@ -1,0 +1,55 @@
+{
+  "name": "muras_app",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "two": "react-native run-android && react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.9.0",
+    "@react-native-community/masked-view": "^0.1.9",
+    "@react-navigation/bottom-tabs": "^5.2.7",
+    "@react-navigation/drawer": "^5.5.0",
+    "@react-navigation/native": "^5.1.6",
+    "@react-navigation/stack": "^5.2.11",
+    "autoprefixer": "^9.7.6",
+    "axios": "^0.19.2",
+    "moment": "^2.29.1",
+    "react": "16.11.0",
+    "react-native": "0.62.2",
+    "react-native-base64": "^0.0.2",
+    "react-native-elements": "^1.2.7",
+    "react-native-gesture-handler": "^1.6.1",
+    "react-native-reanimated": "^1.8.0",
+    "react-native-safe-area-context": "^0.7.3",
+    "react-native-screens": "^2.5.0",
+    "react-native-svg": "^12.1.0",
+    "react-native-svg-transformer": "^0.14.3",
+    "react-native-vector-icons": "^6.6.0",
+    "react-redux": "^7.2.0",
+    "react-router-native": "^5.1.2",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/runtime": "^7.9.2",
+    "@react-native-community/eslint-config": "^1.1.0",
+    "babel-jest": "^25.3.0",
+    "eslint": "^6.8.0",
+    "jest": "^25.3.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-test-renderer": "16.11.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "proxy": "http://localhost:5000"
+}
