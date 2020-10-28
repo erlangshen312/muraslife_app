@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import {AuthContext} from '../../AuthContext';
 
-import apiUrl, {mlColors} from '../../configs/config';
-import setAuthToken from '../../utils/setAuthToken';
+import {apiUrl, baseUrl, mlColors} from '../../configs/config';
+import {getToken, setToken} from '../../utils/asyncStorage';
 
-const Registration = ({navigation}) => {
+const Registration = () => {
   const {signUp} = useContext(AuthContext);
 
   const [name, setUsername] = useState('');
@@ -24,79 +24,88 @@ const Registration = ({navigation}) => {
   const [warning, setWarning] = useState('');
 
   const onLoginHandler = async () => {
-    const config = {headers: {'Content-Type': 'application/json'}};
-    const body = JSON.stringify({name, email, password});
-    try {
-      const res = await axios.post(baseUrl + '/api/users', body, config);
-      const token = res.data.token;
-      console.warn(token);
-      setToken(token);
-      getToken();
-      signUp();
-    } catch (err) {
-      const war = err.response.data.errors.map((er) => er.msg);
-      setWarning(war);
-      removeToken();
-      console.warn('ERROR HERE: ', err.response.data.errors);
+    if (password !== password2) {
+      console.log('PASSWORD IS NOT MATCH');
+      setWarning('Введенные пароли не совпадают!');
+    } else {
+      setWarning('');
+      const config = {headers: {'Content-Type': 'application/json'}};
+      const body = JSON.stringify({name, email, password});
+      try {
+        const res = await axios.post(baseUrl + '/api/users', body, config);
+        try {
+          console.log(res);
+          await setToken(res.data.token);
+          const token = await getToken();
+          console.log(token);
+          signUp();
+        } catch (err) {
+          console.warn(err);
+        }
+        signUp();
+      } catch (error) {
+        const warning = error.response.data.errors.map((er) => er.msg);
+        console.warn(error);
+        setWarning(warning);
+      }
     }
   };
   return (
-      <KeyboardAvoidingView behavior="padding">
-        <View style={styles.input_container}>
-          <Text style={styles.error}>{warning}</Text>
-          <TextInput
-            autoCapitalize="none"
-            autoCorrect={false}
-            // keyboardType={'text'}
-            style={styles.text_input}
-            placeholder="nickname"
-            // placeholderTextColor="white"
-            value={name}
-            onChangeText={(text) => setUsername(text)}
-          />
-          <TextInput
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType={'email-address'}
-            style={styles.text_input}
-            placeholder="email@mail.com"
-            // placeholderTextColor="white"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
-          />
-          <TextInput
-            style={styles.text_input}
-            placeholder="***************"
-            secureTextEntry
-            // placeholderTextColor="white"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-          />
-          <TextInput
-            style={styles.text_input}
-            placeholder="***************"
-            secureTextEntry
-            // placeholderTextColor="white"
-            value={password2}
-            onChangeText={(text) => setPassword2(text)}
-          />
-        </View>
-        <View style={styles.button_container}>
-          <TouchableOpacity
-            title="Login"
-            style={styles.button}
-            onPress={() => onLoginHandler()}>
-            <Text style={styles.text_button}>Registration</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
+    <KeyboardAvoidingView behavior="padding">
+      <View style={styles.input_container}>
+        <Text style={styles.error}>{warning}</Text>
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          // keyboardType={'text'}
+          style={styles.text_input}
+          placeholder="nickname"
+          // placeholderTextColor="white"
+          value={name}
+          onChangeText={(text) => setUsername(text)}
+        />
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          keyboardType={'email-address'}
+          style={styles.text_input}
+          placeholder="email@mail.com"
+          // placeholderTextColor="white"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
+        />
+        <TextInput
+          style={styles.text_input}
+          placeholder="*********"
+          secureTextEntry
+          // placeholderTextColor="white"
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TextInput
+          style={styles.text_input}
+          placeholder="*********"
+          secureTextEntry
+          // placeholderTextColor="white"
+          value={password2}
+          onChangeText={(text) => setPassword2(text)}
+        />
+      </View>
+      <View style={styles.button_container}>
+        <TouchableOpacity
+          title="Login"
+          style={styles.button}
+          onPress={() => onLoginHandler()}>
+          <Text style={styles.text_button}>Registration</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export default Registration;
 
 const styles = StyleSheet.create({
-  
   text_input: {
     height: 55,
     backgroundColor: 'rgba(236,239,241 ,1)',

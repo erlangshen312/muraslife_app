@@ -7,7 +7,6 @@
  */
 
 import React, {useState, useEffect, useMemo} from 'react';
-import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -23,8 +22,8 @@ import Details from '../src/screens/dashboard/Details';
 import Profile from '../src/screens/profile/Profile';
 import News from './screens/news/News';
 import NewsDetails from './screens/news/NewsDetails';
-import {getToken} from './utils/asyncStorage';
-import {removeToken} from './utils/asyncStorage';
+import {getToken, removeToken, setToken} from './utils/asyncStorage';
+import {AsyncStorage} from '@react-native-community/async-storage';
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
@@ -35,14 +34,6 @@ const AuthStackScreen = () => (
       options={{
         headerShown: false,
         title: 'Sign in',
-      }}
-    />
-    <AuthStack.Screen
-      name="Registration"
-      component={Registration}
-      options={{
-        headerShown: false,
-        title: 'Sign up',
       }}
     />
   </AuthStack.Navigator>
@@ -113,8 +104,8 @@ const TabStackScreen = () => (
 const RootStack = createStackNavigator();
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [userToken, setUserToken] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [userToken, setUserToken] = useState();
 
   const authContext = useMemo(() => {
     return {
@@ -140,6 +131,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    async function fetchData() {
+      const token = await getToken();
+      setUserToken(token);
+    }
+    fetchData();
     setTimeout(() => {
       setIsLoading(false);
     }, 1000);
@@ -152,7 +148,7 @@ const App = () => {
           name="App"
           component={TabStackScreen}
           options={{
-            animationEnabled: true,
+            animationEnabled: false,
           }}
         />
       ) : (
@@ -160,7 +156,7 @@ const App = () => {
           name="Auth"
           component={AuthStackScreen}
           options={{
-            animationEnabled: true,
+            animationEnabled: false,
           }}
         />
       )}

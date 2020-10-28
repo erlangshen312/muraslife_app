@@ -9,35 +9,29 @@ import {
   Dimensions,
 } from 'react-native';
 import axios from 'axios';
-import {
-  apiUrl,
-  globalConfig,
-  dimensionWidth,
-  mlColors,
-} from '../../configs/config';
+import {apiUrl, globalConfig, mlColors} from '../../configs/config';
+
+const config = {
+  headers: {
+    'Content-Type': 'application/json',
+  },
+};
 
 const Dashboard = ({navigation}) => {
   const [language, setLanguage] = useState();
   const [posts, setPosts] = useState([]);
-  useEffect(() => {
-    getPosts();
-  }, [getPosts]);
 
-  const getPosts = async () => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(apiUrl + '/api/posts', config);
+        setPosts(res.data);
+      } catch (err) {
+        console.warn(err);
+      }
     };
-    try {
-      const res = await axios.get(apiUrl + '/api/posts', config);
-      // const sm = JSON.stringify(res.data);
-      console.warn(res.data);
-      setPosts(res.data);
-    } catch (err) {
-      console.warn(err);
-    }
-  };
+    fetchData();
+  });
 
   const [count, setCount] = React.useState(0);
 

@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 export const getToken = async () => {
   try {
     const value = await AsyncStorage.getItem('@token');
+    console.log("setValueToken : " + value)
     if (value !== 'null') {
       return value;
     }

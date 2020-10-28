@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
   Image,
   Linking,
+  FlatList,
 } from 'react-native';
-import {FlatList} from 'react-native-gesture-handler';
 import axios from 'axios';
 import {dimensionHeight, dimensionWidth, newsUrl} from '../../configs/config';
 import news1 from './news.json';
@@ -39,11 +39,11 @@ const News = ({navigation}) => {
   return (
     <FlatList
       data={news}
-      keyExtractor={(item) => item.key}
+      keyExtractor={(item) => item.id}
       renderItem={({item}) => {
         return (
           <TouchableOpacity
-            key={item.id}
+            key={item.id.toString()}
             onPress={() => navigation.navigate('Details', {item})}>
             <View
               style={{

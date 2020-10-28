@@ -1,18 +1,24 @@
 import React, {Component} from 'react';
-import {Text, StyleSheet, View} from 'react-native';
+import {Text, StyleSheet, View, Image} from 'react-native';
 
 export default class Splash extends Component {
   render() {
     return (
-      <View style={styles.content}>
-        <Text> Loading </Text>
+      <View style={styles.container}>
+        <Image
+          style={{
+            width: 320,
+            height: 200,
+          }}
+          source={require('../assets/images/muraslife-logo.png')}
+        />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  content: {
+  container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',

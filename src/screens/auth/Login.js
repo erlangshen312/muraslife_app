@@ -34,13 +34,11 @@ const Login = () => {
     if (email.length === '' || password.length === '') {
       return setWarning('Укажите почту');
     }
-
     try {
       const res = await axios.post(baseUrl + '/api/auth', body, config);
       try {
         await setToken(res.data.token);
         const token = await getToken();
-        console.warn('getToken' + token);
         signIn();
       } catch (err) {
         console.warn(err);
