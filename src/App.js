@@ -23,7 +23,6 @@ import Profile from '../src/screens/profile/Profile';
 import News from './screens/news/News';
 import NewsDetails from './screens/news/NewsDetails';
 import {getToken, removeToken, setToken} from './utils/asyncStorage';
-import {AsyncStorage} from '@react-native-community/async-storage';
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
@@ -50,7 +49,9 @@ const DashboardStackScreen = () => (
     <DashboardStack.Screen
       name="Details"
       component={Details}
-      options={{animationEnabled: false}}
+      options={{
+        animationEnabled: false,
+      }}
     />
   </DashboardStack.Navigator>
 );
@@ -141,6 +142,18 @@ const App = () => {
     }, 1000);
   }, []);
 
+  const getTabBarVisibility = (route) => {
+    const routeName = route.state
+      ? route.state.routes[route.state.index].name
+      : '';
+
+    if (routeName === 'Details') {
+      return false;
+    }
+
+    return true;
+  };
+
   const RootStackScreen = () => (
     <RootStack.Navigator headerMode="none">
       {userToken ? (
@@ -170,7 +183,11 @@ const App = () => {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer initialRouteName="Dashboard">
-        <RootStackScreen />
+        <RootStackScreen
+          options={({route}) => ({
+            tabBarVisible: getTabBarVisibility(route),
+          })}
+        />
       </NavigationContainer>
     </AuthContext.Provider>
   );

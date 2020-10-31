@@ -1,6 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Image, View, TouchableOpacity, Text} from 'react-native';
-import {dimensionWidth, mlColors, dimensionHeight} from '../../configs/config';
+import {
+  dimensionWidth,
+  mlColors,
+  dimensionHeight,
+  apiUrl,
+} from '../../configs/config';
 import Login from './Login';
 import Registration from './Registration';
 

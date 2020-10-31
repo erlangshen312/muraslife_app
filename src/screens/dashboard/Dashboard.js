@@ -31,7 +31,7 @@ const Dashboard = ({navigation}) => {
       }
     };
     fetchData();
-  });
+  }, []);
 
   const [count, setCount] = React.useState(0);
 

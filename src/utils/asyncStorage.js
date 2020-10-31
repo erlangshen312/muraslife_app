@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 export const getToken = async () => {
   try {
     const value = await AsyncStorage.getItem('@token');
-    console.log("setValueToken : " + value)
+    console.log('setValueToken : ' + value);
     if (value !== 'null') {
       return value;
     }
@@ -27,6 +27,36 @@ export const removeToken = async () => {
     await AsyncStorage.removeItem('@token');
   } catch (e) {
     console.log('removeToken : ' + e);
+    return null;
+  }
+};
+
+export const getAuthData = async () => {
+  try {
+    const object = await AsyncStorage.getItem('@authData');
+    const obj = JSON.parse(object);
+
+    console.log('1: ' + obj, '2: ' + object);
+    if (obj !== 'null') {
+      return obj;
+    }
+  } catch (e) {
+    console.log('getToken : ' + e);
+    return null;
+  }
+};
+
+export const setAuthData = async (authData) => {
+  try {
+    await AsyncStorage.setItem('@authData', JSON.stringify(authData))
+      .then(() => {
+        console.log('‘It was saved successfully’');
+      })
+      .catch(() => {
+        console.log('‘There was an error saving the authData');
+      });
+  } catch (e) {
+    console.log('authData : ' + e);
     return null;
   }
 };

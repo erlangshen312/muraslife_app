@@ -14,9 +14,10 @@ import {
   baseUrl,
   dimensionWidth,
   mlColors,
+  apiUrl,
   dimensionHeight,
 } from '../../configs/config';
-import {getToken, setToken} from '../../utils/asyncStorage';
+import {getToken, setAuthData, setToken} from '../../utils/asyncStorage';
 
 const Login = () => {
   const {signIn} = useContext(AuthContext);
@@ -27,7 +28,11 @@ const Login = () => {
 
   const onLoginHandler = async () => {
     // const method = {method: 'POST'};
-    const config = {headers: {'Content-Type': 'application/json'}};
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
     const body = JSON.stringify({email, password});
 
     //ИСПРАВИТЬ ПРОВЕРКУ
@@ -35,10 +40,9 @@ const Login = () => {
       return setWarning('Укажите почту');
     }
     try {
-      const res = await axios.post(baseUrl + '/api/auth', body, config);
+      const res = await axios.post(apiUrl + '/api/auth', body, config);
       try {
         await setToken(res.data.token);
-        const token = await getToken();
         signIn();
       } catch (err) {
         console.warn(err);
