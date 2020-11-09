@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import axios from 'axios';
 import {getToken, setAuthData, getAuthData} from '../../utils/asyncStorage';
 import {
@@ -7,92 +7,112 @@ import {
   dimensionHeight,
   apiUrl,
   imageUrl,
+  mlColors,
 } from '../../configs/config';
+import ProfileInfoModal from './ProfileInfoModal';
+import USER_LOGO from '../../assets/images/user.png';
+import ProfileImage from './ProfileImage';
+import {ScrollView} from 'react-native-gesture-handler';
 
 export default function ProfileAbout() {
   const [about, setAbout] = useState({});
-  
+  const [modalInfo, setModalInfo] = useState(false);
+
+  const fetchData = async () => {
+    console.log('FETCH DATA NOW IS WORKING');
+    const token = await getToken();
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      };
+      const res = await axios.get('http://localhost:5000/api/auth', config);
+      setAbout(res.data);
+      setAuthData(res.data);
+    } catch (error) {
+      const warning = error.response.data.errors.map((er) => er.msg);
+      console.log(warning);
+    }
+  };
+
+  const getAuth = async () => {
+    const authData = await getAuthData();
+    {
+      console.log('GET AUTH DATA', authData);
+      authData._id === 'null'
+        ? fetchData()
+        : setAbout(authData) && console.log('SET AUTH DATA NOW IS WORKING');
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const token = await getToken();
-      try {
-        const config = {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-        };
-        const res = await axios.get('http://localhost:5000/api/auth', config);
-        setAbout(res.data);
-        setAuthData(res.data);
-      } catch (error) {
-        const warning = error.response.data.errors.map((er) => er.msg);
-        console.log(warning);
-      }
-    };
-    fetchData();
-    // if (about.avatar === null) {
-    //   console.log('if about', about);
-    // } else {
-    //   console.log('else about', about, authData);
-    // }
+    getAuth();
   }, []);
 
-  const avatar =
-    'https://images.unsplash.com/photo-1519058082700-08a0b56da9b4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=668&q=80';
-
-  return (
-    <View>
-      <View>
-        {about && (
-          <Image
-            source={{
-              uri: imageUrl + about.banner,
-            }}
-            style={{
-              width: dimensionWidth,
-              height: dimensionHeight / 4,
-              // borderRadius: ,
-            }}
-          />
-        )}
-        <Image
-          source={{
-            uri: imageUrl + about.avatar,
-          }}
+  const ProfileBioInfo = () => {
+    return (
+      <View
+        style={{
+          alignSelf: 'center',
+        }}>
+        <Text
           style={{
-            width: 130,
-            height: 130,
-            alignSelf: 'center',
-            borderRadius: 100,
-            position: 'absolute',
-            bottom: -40,
-          }}
-        />
-      </View>
-      <View style={{top: 30, padding: 20}}>
-        <View
-          style={{
-            position: 'relative',
-            alignSelf: 'center',
+            fontWeight: '600',
+            fontSize: 18,
+            width: dimensionWidth / 1.7,
           }}>
+          {about && about.name}
+        </Text>
+        <Text
+          style={{
+            fontWeight: '400',
+            fontSize: 14,
+            width: dimensionWidth / 1.7,
+          }}>
+          {about && about.status}
+        </Text>
+        <TouchableOpacity onPress={() => setModalInfo(!modalInfo)}>
           <Text
             style={{
-              fontWeight: '600',
-              fontSize: 18,
+              textAlign: 'left',
+              paddingTop: 10,
+              color: mlColors.light_blue,
             }}>
-            {about && about.name}
+            Изменить
           </Text>
-        </View>
-        <View>
-          <Text style={{textAlign: 'center'}}>{about && about.bio}</Text>
-        </View>
-        <View>
-          <Text style={{textAlign: 'center'}}>{about && about.company}</Text>
-        </View>
+        </TouchableOpacity>
       </View>
-    </View>
+    );
+  };
+
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <ProfileImage about={about} />
+        <ProfileBioInfo />
+      </View>
+      <View style={styles.bio_container}>
+        <Text>{about && about.bio ? about.bio : 'Расскажите о себе!'}</Text>
+        <Text>{about && about.company}</Text>
+      </View>
+      <ProfileInfoModal
+        modalInfo={modalInfo}
+        exitModalInfo={() => setModalInfo(false)}
+      />
+    </ScrollView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  image_container: {},
+  bio_container: {
+    padding: 10,
+  },
+  post_container: {},
+});

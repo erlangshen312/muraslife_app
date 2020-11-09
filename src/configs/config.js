@@ -3,7 +3,7 @@ import {Dimensions} from 'react-native';
 //use niceColors lib
 
 export const apiUrl = 'http://localhost:5000';
-// export const apiUrl = 'http://muras.life' ;
+// export const apiUrl = 'http://muras.life';//
 export const baseUrl = 'https://muras.life';
 export const imageUrl = 'https://muras.life/';
 

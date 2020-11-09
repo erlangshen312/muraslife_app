@@ -35,8 +35,6 @@ export const getAuthData = async () => {
   try {
     const object = await AsyncStorage.getItem('@authData');
     const obj = JSON.parse(object);
-
-    console.log('1: ' + obj, '2: ' + object);
     if (obj !== 'null') {
       return obj;
     }
@@ -60,3 +58,5 @@ export const setAuthData = async (authData) => {
     return null;
   }
 };
+
+

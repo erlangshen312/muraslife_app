@@ -39,7 +39,7 @@ const News = ({navigation}) => {
   return (
     <FlatList
       data={news}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item, index) => index.toString()}
       renderItem={({item}) => {
         return (
           <TouchableOpacity

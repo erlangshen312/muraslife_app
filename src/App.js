@@ -142,18 +142,6 @@ const App = () => {
     }, 1000);
   }, []);
 
-  const getTabBarVisibility = (route) => {
-    const routeName = route.state
-      ? route.state.routes[route.state.index].name
-      : '';
-
-    if (routeName === 'Details') {
-      return false;
-    }
-
-    return true;
-  };
-
   const RootStackScreen = () => (
     <RootStack.Navigator headerMode="none">
       {userToken ? (
@@ -183,11 +171,7 @@ const App = () => {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer initialRouteName="Dashboard">
-        <RootStackScreen
-          options={({route}) => ({
-            tabBarVisible: getTabBarVisibility(route),
-          })}
-        />
+        <RootStackScreen />
       </NavigationContainer>
     </AuthContext.Provider>
   );
