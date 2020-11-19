@@ -39,7 +39,7 @@ export const getAuthData = async () => {
       return obj;
     }
   } catch (e) {
-    console.log('getToken : ' + e);
+    console.log('getAuthData : ' + e);
     return null;
   }
 };
@@ -48,15 +48,26 @@ export const setAuthData = async (authData) => {
   try {
     await AsyncStorage.setItem('@authData', JSON.stringify(authData))
       .then(() => {
-        console.log('‘It was saved successfully’');
+        console.log('‘It was saved successfully set to asyncStorage’');
       })
       .catch(() => {
         console.log('‘There was an error saving the authData');
       });
   } catch (e) {
-    console.log('authData : ' + e);
+    console.log('setAuthData : ' + e);
     return null;
   }
 };
 
-
+export const removeAuthData = async () => {
+  try {
+    const object = await AsyncStorage.removeItem('@authData');
+    const obj = JSON.parse(object);
+    if (obj !== 'null') {
+      return obj;
+    }
+  } catch (e) {
+    console.log('removeAuthData : ' + e);
+    return null;
+  }
+};

@@ -20,8 +20,8 @@
     "autoprefixer": "^9.7.6",
     "axios": "^0.19.2",
     "moment": "^2.29.1",
-    "react": "16.11.0",
-    "react-native": "0.62.2",
+    "react": "16.13.1",
+    "react-native": "0.63.3",
     "react-native-base64": "^0.0.2",
     "react-native-dotenv": "^2.4.2",
     "react-native-elements": "^1.2.7",
@@ -30,6 +30,7 @@
     "react-native-reanimated": "^1.8.0",
     "react-native-safe-area-context": "^0.7.3",
     "react-native-screens": "^2.5.0",
+    "react-native-select-two": "^1.1.0",
     "react-native-sqlite-storage": "^5.0.0",
     "react-native-svg": "^12.1.0",
     "react-native-svg-transformer": "^0.14.3",
@@ -49,6 +50,7 @@
     "eslint": "^6.8.0",
     "jest": "^25.3.0",
     "metro-react-native-babel-preset": "^0.59.0",
+    "path": "^0.12.7",
     "react-test-renderer": "16.11.0"
   },
   "jest": {

@@ -15,7 +15,7 @@ import ProfileImage from './ProfileImage';
 import {ScrollView} from 'react-native-gesture-handler';
 
 export default function ProfileAbout() {
-  const [about, setAbout] = useState({});
+  const [about, setAbout] = useState();
   const [modalInfo, setModalInfo] = useState(false);
 
   const fetchData = async () => {
@@ -28,7 +28,7 @@ export default function ProfileAbout() {
           'x-auth-token': token,
         },
       };
-      const res = await axios.get('http://localhost:5000/api/auth', config);
+      const res = await axios.get(apiUrl + '/api/auth', config);
       setAbout(res.data);
       setAuthData(res.data);
     } catch (error) {
@@ -41,7 +41,7 @@ export default function ProfileAbout() {
     const authData = await getAuthData();
     {
       console.log('GET AUTH DATA', authData);
-      authData._id === 'null'
+      authData !== 'null'
         ? fetchData()
         : setAbout(authData) && console.log('SET AUTH DATA NOW IS WORKING');
     }
@@ -90,7 +90,7 @@ export default function ProfileAbout() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <ProfileImage about={about} />
+        {about && <ProfileImage about={about} />}
         <ProfileBioInfo />
       </View>
       <View style={styles.bio_container}>

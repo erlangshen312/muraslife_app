@@ -15,14 +15,21 @@ import {AuthContext} from './AuthContext';
 import SpashScreen from './components/Splash';
 
 import Auth from '../src/screens/auth/Auth';
-import Login from '../src/screens/auth/Login';
-import Registration from '../src/screens/auth/Registration';
 import Dashboard from '../src/screens/dashboard/Dashboard';
 import Details from '../src/screens/dashboard/Details';
 import Profile from '../src/screens/profile/Profile';
+import ProfileCreatePostModal from '../src/screens/profile/post/PostCreateAndUpdate';
+import ProfilePostDetails from '../src/screens/profile/post/PostDetails';
 import News from './screens/news/News';
+import Shop from './screens/shop/Shop';
 import NewsDetails from './screens/news/NewsDetails';
-import {getToken, removeToken, setToken} from './utils/asyncStorage';
+import {
+  getAuthData,
+  getToken,
+  removeAuthData,
+  removeToken,
+  setToken,
+} from './utils/asyncStorage';
 
 const AuthStack = createStackNavigator();
 const AuthStackScreen = () => (
@@ -65,13 +72,13 @@ const ProfileStackScreen = () => (
       options={{animationEnabled: false}}
     />
     <ProfileStack.Screen
-      name="Login"
-      component={Login}
+      name="ProfilePost"
+      component={ProfileCreatePostModal}
       options={{animationEnabled: false}}
     />
     <ProfileStack.Screen
-      name="Registration"
-      component={Registration}
+      name="ProfilePostDetails"
+      component={ProfilePostDetails}
       options={{animationEnabled: false}}
     />
   </ProfileStack.Navigator>
@@ -93,11 +100,33 @@ const NewsStackScreen = () => (
   </NewsStack.Navigator>
 );
 
+const ShopStack = createStackNavigator();
+const ShopStackScreen = () => (
+  <ShopStack.Navigator>
+    <ShopStack.Screen
+      name="Shop"
+      component={Shop}
+      options={{animationEnabled: false}}
+    />
+    {/* <ShopStack.Screen
+      name="Details"
+      component={ShopDetails}
+      options={{animationEnabled: false}}
+    /> */}
+    {/* <ShopStack.Screen
+      name="Checkout"
+      component={ShopCheckout}
+      options={{animationEnabled: false}}
+    /> */}
+  </ShopStack.Navigator>
+);
+
 const TabStack = createBottomTabNavigator();
 const TabStackScreen = () => (
   <TabStack.Navigator>
     <TabStack.Screen name="Dashboard" component={DashboardStackScreen} />
     <TabStack.Screen name="News" component={NewsStackScreen} />
+    <TabStack.Screen name="Shop" component={ShopStackScreen} />
     <TabStack.Screen name="Profile" component={ProfileStackScreen} />
   </TabStack.Navigator>
 );
@@ -124,7 +153,9 @@ const App = () => {
       },
       signOut: async () => {
         const token = await removeToken();
+        // const authData = await removeAuthData();
         console.warn('remove', token);
+        // console.warn('remove', authData);
         setIsLoading(false);
         setUserToken(token);
       },

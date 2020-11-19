@@ -28,7 +28,7 @@ const News = ({navigation}) => {
     try {
       // const res = await axios.get(newsUrl, config);
       // const sm = JSON.stringify(res.data);
-      console.warn(news);
+      // console.warn(news);
       // setNews(res.data);
       setNews(news1);
     } catch (err) {
