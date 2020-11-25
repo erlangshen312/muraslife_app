@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
 import axios from 'axios';
 import {getToken, setAuthData, getAuthData} from '../../utils/asyncStorage';
 import {
@@ -13,43 +13,10 @@ import ProfileInfoModal from './ProfileInfoModal';
 import USER_LOGO from '../../assets/images/user.png';
 import ProfileImage from './ProfileImage';
 import {ScrollView} from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function ProfileAbout() {
-  const [about, setAbout] = useState();
+export default function ProfileAbout({bioData}) {
   const [modalInfo, setModalInfo] = useState(false);
-
-  const fetchData = async () => {
-    console.log('FETCH DATA NOW IS WORKING');
-    const token = await getToken();
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
-        },
-      };
-      const res = await axios.get(apiUrl + '/api/auth', config);
-      setAbout(res.data);
-      setAuthData(res.data);
-    } catch (error) {
-      const warning = error.response.data.errors.map((er) => er.msg);
-      console.log(warning);
-    }
-  };
-
-  const getAuth = async () => {
-    const authData = await getAuthData();
-    {
-      console.log('GET AUTH DATA', authData);
-      authData !== 'null'
-        ? fetchData()
-        : setAbout(authData) && console.log('SET AUTH DATA NOW IS WORKING');
-    }
-  };
-
-  useEffect(() => {
-    getAuth();
-  }, []);
 
   const ProfileBioInfo = () => {
     return (
@@ -63,7 +30,7 @@ export default function ProfileAbout() {
             fontSize: 18,
             width: dimensionWidth / 1.7,
           }}>
-          {about && about.name}
+          {bioData.name}
         </Text>
         <Text
           style={{
@@ -71,18 +38,20 @@ export default function ProfileAbout() {
             fontSize: 14,
             width: dimensionWidth / 1.7,
           }}>
-          {about && about.status}
+          {bioData.status}
         </Text>
-        <TouchableOpacity onPress={() => setModalInfo(!modalInfo)}>
+        <Pressable onPress={() => setModalInfo(!modalInfo)}>
           <Text
             style={{
               textAlign: 'left',
               paddingTop: 10,
               color: mlColors.light_blue,
+              alignContent: 'center',
             }}>
-            Изменить
+            <Icon name="create-outline" size={24} />
+            Редактировать
           </Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
     );
   };
@@ -90,12 +59,12 @@ export default function ProfileAbout() {
   return (
     <ScrollView>
       <View style={styles.container}>
-        {about && <ProfileImage about={about} />}
+        <ProfileImage bioData={bioData} />
         <ProfileBioInfo />
       </View>
       <View style={styles.bio_container}>
-        <Text>{about && about.bio ? about.bio : 'Расскажите о себе!'}</Text>
-        <Text>{about && about.company}</Text>
+        <Text>{bioData.bio ? bioData.bio : 'Расскажите о себе!'}</Text>
+        <Text>{bioData.company}</Text>
       </View>
       <ProfileInfoModal
         modalInfo={modalInfo}

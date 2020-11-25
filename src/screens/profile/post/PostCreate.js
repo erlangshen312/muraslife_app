@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   TextInput,
 } from 'react-native';
@@ -11,9 +11,11 @@ import axios from 'axios';
 import {apiUrl, dimensionWidth, mlColors} from '../../../configs/config';
 import {getToken, getAuthData} from '../../../utils/asyncStorage';
 
-export default function PostCreateAndUpdate() {
+export default function PostCreate({route, navigation}) {
   const [warning, setWarning] = useState('');
-  const [selectedItem, setSelectedItem] = useState({});
+  const [metros, setMetros] = useState([]);
+
+  const {getUserPostsList} = route.params
 
   const config = {
     headers: {
@@ -28,53 +30,39 @@ export default function PostCreateAndUpdate() {
     note: '',
     adress: '',
     cost: '',
-    category: '',
+    service: '5eb95ca0fa815c2ee2457ff7',
+    category: '5eb94e9e8544502c9913b2c0',
     metro: '5ebd0bb856e90d78cbe0792c',
     phone: '',
     banner: '',
   });
 
-  const [metros, setMetros] = useState([]);
-
+  const getMetroLists = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/api/metro`, config);
+      setMetros(res.data);
+      console.log(res.data);
+    } catch (err) {
+      console.warn(err);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(apiUrl + '/api/metro', config);
-        setMetros(res.data);
-        console.log(res.data);
-      } catch (err) {
-        console.warn(err);
-      }
-    };
-    fetchData();
+    getMetroLists();
   }, []);
+
+  function goBack() {
+    navigation.goBack(null);
+    getUserPostsList()
+  }
 
   const {title, note, adress, cost, category, metro, phone, banner} = form;
 
-  // useEffect(() => {
-  //   checkStoreData();
-  //   return () => {};
-  // }, []);
-
-  // const checkStoreData = async () => {
-  //   const authData = await getAuthData();
-  //   setForm({
-  //     _id: authData._id,
-  //     title: authData.title,
-  //     note: authData.note,
-  //     adress: authData.adress,
-  //     cost: authData.cost,
-  //     phone: authData.phone,
-  //     category: authData.category,
-  //     metro: authData.metro,
-  //     banner: authData.banner,
-  //   });
-  // };
-
   const createPost = async () => {
     const token = await getToken();
+    const authData = await getAuthData();
+
     let formData = {
-      _id: form._id,
+      user_id: authData._id,
       title: form.title,
       note: form.note,
       adress: form.adress,
@@ -82,7 +70,7 @@ export default function PostCreateAndUpdate() {
       phone: form.phone,
       category: form.category,
       metro: form.metro,
-      banner: form.banner,
+      // banner: form.banner,
     };
     const config = {
       headers: {
@@ -91,29 +79,16 @@ export default function PostCreateAndUpdate() {
       },
     };
     try {
-      console.log(formData);
-      const res = await axios.post(apiUrl + '/api/post/add', formData, config);
-      console.log(res.data);
-      setAuthData(res.data);
-      exitModalInfo();
+      const res = await axios.post(`${apiUrl}/api/posts/`, formData, config);
+      // await setAuthData(res.data);
+      if(res.status !== 200) return console.warn("DATA IS NOT PUBLISHED")
+      await goBack();
     } catch (error) {
-      const warning = error.response.data.errors.map((er) => er.msg);
-      setWarning(warning);
-      console.log('in catch error: ', warning);
+      console.error(error);
+      const er = error.response.data.errors;
+      setWarning(er);
     }
   };
-
-  const _handlerClose = () => {
-    exitModalInfo();
-    checkStoreData();
-    setWarning('');
-    //REFRESH AUTHDATA TO SHOW NEW INFORMATION
-  };
-
-  _handleSelected = (selected) => {
-    setSelectedItem(selected);
-  };
-
   return (
     <View style={styles.modalContainer}>
       <ScrollView>
@@ -173,28 +148,20 @@ export default function PostCreateAndUpdate() {
               value={phone}
               onChangeText={(text) => setForm({...form, phone: text})}
             />
-            <TextInput
-              autoCapitalize="none"
-              autoCorrect={false}
-              keyboardType={'phone-pad'}
-              style={styles.text_input}
-              placeholder="+7XXXZZZOORR"
-              value={phone}
-              onChangeText={(text) => setForm({...form, phone: text})}
-            />
-            
           </View>
 
           <View style={styles.button_container}>
-            <TouchableOpacity
-              title="Login"
+            <Pressable
               style={[styles.save_button]}
-              onPress={() => updateInfo()}>
-              <Text style={styles.save_text_button}>Обновить</Text>
-            </TouchableOpacity>
-            {warning.length > 0 ? (
+              onPress={() => createPost()}>
+              <Text style={styles.save_text_button}>Публиковать</Text>
+            </Pressable>
+            <Pressable style={[styles.exit_button]} onPress={() => goBack()}>
+              <Text style={styles.exit_text_button}>Назад</Text>
+            </Pressable>
+            {/* {warning.length > 0 ? (
               <Text style={styles.error}>{warning}</Text>
-            ) : null}
+            ) : null} */}
           </View>
         </View>
       </ScrollView>
@@ -255,12 +222,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: mlColors.white,
-    height: 55,
+    height: 20,
     marginBottom: 20,
     borderRadius: 30,
   },
   exit_text_button: {
-    color: mlColors.dark_blue,
+    color: mlColors.brown,
     fontWeight: '700',
   },
   error: {

@@ -2,10 +2,12 @@ import {Dimensions} from 'react-native';
 
 //use niceColors lib
 
-export const apiUrl = 'http://localhost:5000';
-// export const apiUrl = 'http://muras.life'; //
-export const baseUrl = 'http://localhost:5000';
-export const imageUrl = 'http://localhost:5000';
+export const apiUrl = 'http://192.168.1.66:5000';
+export const baseUrl = 'http://192.168.1.66:5000';
+export const imageUrl = 'http://192.168.1.66:5000';
+// export const apiUrl = 'https://muras.life';
+// export const baseUrl = 'https://muras.life';
+// export const imageUrl = 'https://muras.life';
 
 //NEWS ELGEZIT
 export const newsUrl = 'https://elgezit.kg/wp-json/wp/v2/posts';
@@ -37,3 +39,16 @@ export const mlColors = {
   light_green: '#81C784',
   dark_green: '#2E7D32',
 };
+
+export const appName = 'Muras Life';
+export const socialLink = {
+  insta: 'http://instagram.com/muras.life',
+  // teleg: 'http://instagram.com/muras.life',
+};
+export const version = '1.0.0';
+
+export const aboutAppInfo = {
+  version: version,
+  appName: appName,
+  socialLink: socialLink,
+}

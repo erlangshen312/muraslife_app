@@ -6,7 +6,7 @@ import USER_LOGO from '../../assets/images/user.png';
 import {getToken, getAuthData, setAuthData} from '../../utils/asyncStorage';
 import {apiUrl} from '../../configs/config';
 
-export default function ProfileImage({about}) {
+export default function ProfileImage({bioData}) {
   const [avatar, setAvatar] = useState();
   const [imageDetail, setImageDetail] = useState();
   const [aboutData, setAboutData] = useState();
@@ -111,7 +111,7 @@ export default function ProfileImage({about}) {
         // You can also display the image using data:
         // const source = { uri: 'data:image/jpeg;base64,' + response.data };
         setAvatar(response);
-        setAboutData(about);
+        setAboutData(bioData);
         _handleUploadPhoto();
       }
     });
@@ -122,7 +122,7 @@ export default function ProfileImage({about}) {
       <Image
         source={
           typeof avatar === 'undefined'
-            ? {uri: apiUrl + '/' + about.avatar}
+            ? {uri: apiUrl + '/' + bioData.avatar}
             : avatar
         }
         style={{

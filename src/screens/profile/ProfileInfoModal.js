@@ -15,7 +15,7 @@ import {
   dimensionWidth,
   mlColors,
 } from '../../configs/config';
-import {getAuthData, getToken, setAuthData} from '../../utils/asyncStorage';
+import {getAuthData, getToken, removeAuthData, setAuthData} from '../../utils/asyncStorage';
 import axios from 'axios';
 export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
   const [warning, setWarning] = useState('');
@@ -70,30 +70,31 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
 
   const checkStoreData = async () => {
     const authData = await getAuthData();
-    setForm({
-      _id: authData._id,
-      avatar: authData.avatar,
-      banner: authData.banner,
-      bdate: authData.bdate,
-      company: authData.company,
-      metro: authData.metro,
-      skills: authData.skills,
-      adress: authData.adress,
-      bio: authData.bio,
-      company: authData.company,
-      email: authData.email,
-      metro: authData.metro,
-      name: authData.name,
-      phone: authData.phone,
-      status: authData.status,
-      skills: authData.skills,
-      youtube: authData.youtube,
-      twitter: authData.twitter,
-      instagram: authData.instagram,
-      linkedin: authData.linkedin,
-      facebook: authData.facebook,
-      whatsapp: authData.whatsapp,
-    });
+    authData &&
+      setForm({
+        _id: authData._id,
+        avatar: authData.avatar,
+        banner: authData.banner,
+        bdate: authData.bdate,
+        company: authData.company,
+        metro: authData.metro,
+        skills: authData.skills,
+        adress: authData.adress,
+        bio: authData.bio,
+        company: authData.company,
+        email: authData.email,
+        metro: authData.metro,
+        name: authData.name,
+        phone: authData.phone,
+        status: authData.status,
+        skills: authData.skills,
+        youtube: authData.youtube,
+        twitter: authData.twitter,
+        instagram: authData.instagram,
+        linkedin: authData.linkedin,
+        facebook: authData.facebook,
+        whatsapp: authData.whatsapp,
+      });
   };
 
   const updateInfo = async () => {
@@ -130,10 +131,9 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
       },
     };
     try {
-      console.log(formData);
       const res = await axios.post(apiUrl + '/api/users/add', formData, config);
       console.log(res.data);
-      setAuthData(res.data);
+      await setAuthData(res.data);
       exitModalInfo();
     } catch (error) {
       const warning = error.response.data.errors.map((er) => er.msg);
@@ -146,7 +146,6 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
     exitModalInfo();
     checkStoreData();
     setWarning('');
-    //REFRESH AUTHDATA TO SHOW NEW INFORMATION
   };
   return (
     <Modal

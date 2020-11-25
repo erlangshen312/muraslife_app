@@ -51,14 +51,14 @@ export default function Details({route, navigation}) {
         <Text style={styles.info_title}>{data.title}</Text>
         <Text style={styles.info_note}>{data.note}</Text>
       </View>
-      <View style={styles.coordinat}>
-        <TouchableOpacity style={styles.coordinat_adress}>
+      <View style={styles.coordinate}>
+        <TouchableOpacity style={styles.coordinate_adress}>
           <Text>{data.adress}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.coordinat_metro}>
+        <TouchableOpacity style={styles.coordinate_metro}>
           <View
             style={[
-              styles.coordinat_metro_icon,
+              styles.coordinate_metro_icon,
               {backgroundColor: `${data.color}`},
             ]}>
             <Text>{data.number}</Text>
@@ -99,19 +99,19 @@ const styles = StyleSheet.create({
   },
   info_note: {},
 
-  coordinat: {padding: 10},
-  coordinat_adress: {
+  coordinate: {padding: 10},
+  coordinate_adress: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
   },
-  coordinat_metro: {
+  coordinate_metro: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
   },
-  coordinat_metro_icon: {
+  coordinate_metro_icon: {
     padding: 3,
     width: 30,
     justifyContent: 'center',
