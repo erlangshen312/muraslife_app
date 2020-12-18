@@ -2,9 +2,9 @@ import {Dimensions} from 'react-native';
 
 //use niceColors lib
 
-export const apiUrl = 'http://192.168.1.66:5000';
-export const baseUrl = 'http://192.168.1.66:5000';
-export const imageUrl = 'http://192.168.1.66:5000';
+export const apiUrl = 'http://localhost:5000';
+export const baseUrl = 'http://localhost:5000';
+export const imageUrl = 'http://localhost:5000';
 // export const apiUrl = 'https://muras.life';
 // export const baseUrl = 'https://muras.life';
 // export const imageUrl = 'https://muras.life';
@@ -12,13 +12,20 @@ export const imageUrl = 'http://192.168.1.66:5000';
 //NEWS ELGEZIT
 export const newsUrl = 'https://elgezit.kg/wp-json/wp/v2/posts';
 
+export const WHATSAPPURL = 'https://api.whatsapp.com/send?phone=';
+export const TELEGRAMURL = 'https://t.me/';
+
 export const globalConfig = {
   RUB: 'Руб',
   SOM: 'Сом',
 };
 
-export const dimensionWidth = Dimensions.get('window').width;
-export const dimensionHeight = Dimensions.get('window').height;
+const {width, height} = Dimensions.get('screen');
+export const ITEM_WIDTH = width;
+export const ITEM_HEIGHT = height * 0.75;
+
+export const dimensionWidth = Dimensions.get('screen').width;
+export const dimensionHeight = Dimensions.get('screen').height;
 
 //COLORS
 export const mlColors = {
@@ -51,4 +58,4 @@ export const aboutAppInfo = {
   version: version,
   appName: appName,
   socialLink: socialLink,
-}
+};

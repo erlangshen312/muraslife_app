@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import axios from 'axios';
-import ImagePicker from 'react-native-image-picker';
+// import ImagePicker from 'react-native-image-picker';
 import USER_LOGO from '../../assets/images/user.png';
 import {getToken, getAuthData, setAuthData} from '../../utils/asyncStorage';
 import {apiUrl} from '../../configs/config';
@@ -88,33 +88,33 @@ export default function ProfileImage({bioData}) {
       }
     };
 
-    ImagePicker.showImagePicker(options, (response) => {
-      console.log('Response = ', response);
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
-      } else {
-        setImageDetail({
-          ...imageDetail,
-          fileName: response.fileName ? response.fileName : 'NONE',
-          path: response.path ? response.path : 'NONE',
-          type: response.type,
-          uri: response.uri,
-          width: response.width,
-          height: response.height,
-        });
-        console.log(imageDetail);
-        console.log('response data:', response);
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-        setAvatar(response);
-        setAboutData(bioData);
-        _handleUploadPhoto();
-      }
-    });
+    // ImagePicker.showImagePicker(options, (response) => {
+    //   console.log('Response = ', response);
+    //   if (response.didCancel) {
+    //     console.log('User cancelled image picker');
+    //   } else if (response.error) {
+    //     console.log('ImagePicker Error: ', response.error);
+    //   } else if (response.customButton) {
+    //     console.log('User tapped custom button: ', response.customButton);
+    //   } else {
+    //     setImageDetail({
+    //       ...imageDetail,
+    //       fileName: response.fileName ? response.fileName : 'NONE',
+    //       path: response.path ? response.path : 'NONE',
+    //       type: response.type,
+    //       uri: response.uri,
+    //       width: response.width,
+    //       height: response.height,
+    //     });
+    //     console.log(imageDetail);
+    //     console.log('response data:', response);
+    //     // You can also display the image using data:
+    //     // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+    //     setAvatar(response);
+    //     setAboutData(bioData);
+    //     _handleUploadPhoto();
+    //   }
+    // });
   };
 
   return (

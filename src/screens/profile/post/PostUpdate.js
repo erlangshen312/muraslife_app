@@ -5,7 +5,7 @@ import {
     View,
     Pressable,
     ScrollView,
-    TextInput,
+    TextInput, Alert,
 } from 'react-native';
 import axios from 'axios';
 import {apiUrl, dimensionWidth, mlColors} from '../../../configs/config';
@@ -101,7 +101,8 @@ export default function PostUpdate({route, navigation}) {
         try {
             const res = await axios.post(`${apiUrl}/api/posts/update`, formData, config);
             // await setAuthData(res.data);
-            // if (res.status !== 200) return console.warn("DATA IS NOT PUBLISHED")
+            if (res.status !== 200) return Alert.alert('Ошибка!', 'Проверьте соединение с интернетом.')
+            Alert.alert('Успешно!', 'Публикация на проверке.');
             await goBack();
         } catch (error) {
             console.error(error);

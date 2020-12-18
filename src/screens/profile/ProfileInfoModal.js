@@ -6,19 +6,19 @@ import {
   TextInput,
   Modal,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from 'react-native';
-import {
-  apiUrl,
-  dimensionHeight,
-  dimensionWidth,
-  mlColors,
-} from '../../configs/config';
-import {getAuthData, getToken, removeAuthData, setAuthData} from '../../utils/asyncStorage';
+import {apiUrl, dimensionWidth, mlColors} from '../../configs/config';
+import {getAuthData, getToken, setAuthData} from '../../utils/asyncStorage';
+import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+import MetroModal from '../../components/MetroModal';
+
 export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
   const [warning, setWarning] = useState('');
+
+  const [isMetro, setIsMetro] = useState(false);
+  const [metroSelected, setMetroSelected] = useState();
 
   const [form, setForm] = useState({
     _id: '',
@@ -29,7 +29,7 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
     bio: '',
     company: '',
     email: '',
-    metro: '5ebd0bb856e90d78cbe0792c',
+    metro: '',
     name: '',
     phone: '',
     skills: '',
@@ -65,11 +65,14 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
 
   useEffect(() => {
     checkStoreData();
-    return () => {};
+    return () => {
+      checkStoreData();
+    };
   }, []);
 
   const checkStoreData = async () => {
     const authData = await getAuthData();
+    console.log(authData);
     authData &&
       setForm({
         _id: authData._id,
@@ -77,13 +80,12 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
         banner: authData.banner,
         bdate: authData.bdate,
         company: authData.company,
-        metro: authData.metro,
+        metroSelected: authData.metro,
         skills: authData.skills,
         adress: authData.adress,
         bio: authData.bio,
         company: authData.company,
         email: authData.email,
-        metro: authData.metro,
         name: authData.name,
         phone: authData.phone,
         status: authData.status,
@@ -106,13 +108,12 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
       banner: form.banner,
       bdate: form.bdate,
       company: form.company,
-      metro: form.metro,
+      metro: metroSelected,
       skills: form.skills,
       adress: form.adress,
       bio: form.bio,
       company: form.company,
       email: form.email,
-      metro: form.metro,
       name: form.name,
       phone: form.phone,
       status: form.status,
@@ -131,14 +132,15 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
       },
     };
     try {
-      const res = await axios.post(apiUrl + '/api/users/add', formData, config);
+      const res = await axios.post(`${apiUrl}/api/users/add`, formData, config);
       console.log(res.data);
       await setAuthData(res.data);
       exitModalInfo();
+      setWarning('');
     } catch (error) {
       const warning = error.response.data.errors.map((er) => er.msg);
       setWarning(warning);
-      console.log('in catch error: ', warning);
+      console.error(warning);
     }
   };
 
@@ -147,39 +149,43 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
     checkStoreData();
     setWarning('');
   };
+
+  const infoMetro = (value) => {
+    setMetroSelected(value);
+  };
+
+  console.log('UDPATE METRO:', metroSelected);
   return (
     <Modal
       animationType="fade"
       transparent={false}
       visible={modalInfo}
       onRequestClose={() => this.modalInfo}>
-      <View style={styles.modalContainer}>
+      <View style={{padding: 10}}>
         <View
           style={{
+            paddingBottom: 20,
             flexDirection: 'row',
-            marginTop: 40,
+            alignItems: 'center',
             justifyContent: 'space-between',
+            marginTop: Platform.OS === 'android' ? 0 : 40,
           }}>
           <Text
             style={{
               fontSize: 30,
-              fontWeight: '800',
-              marginBottom: 40,
+              fontWeight: 'bold',
             }}>
             Профиль
           </Text>
-          <TouchableOpacity
-            title="Login"
-            style={{padding: 12}}
-            onPress={() => _handlerClose()}>
-            <Text style={styles.exit_text_button}>Закрыть</Text>
+          <TouchableOpacity title="Login" onPress={() => _handlerClose()}>
+            <Icon name="close-outline" size={34} />
           </TouchableOpacity>
         </View>
 
         {warning.length > 0 ? (
           <Text style={styles.error}>{warning}</Text>
         ) : null}
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View>
             <View style={styles.input_container}>
               <TextInput
@@ -189,6 +195,7 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
                 style={styles.text_input}
                 placeholder="Enter the name"
                 value={name}
+                maxLength={45}
                 onChangeText={(text) => setForm({...form, name: text})}
               />
               <TextInput
@@ -207,14 +214,16 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
                 numberOfLines={12}
                 placeholder="Enter the bio"
                 value={bio}
+                maxLength={500}
                 onChangeText={(text) => setForm({...form, bio: text})}
               />
               <TextInput
                 autoCapitalize="none"
                 autoCorrect={false}
-                keyboardType={'phone-pad'}
+                keyboardType={'default'}
                 style={styles.text_input}
                 placeholder="Enter the status"
+                maxLength={100}
                 value={status}
                 onChangeText={(text) => setForm({...form, status: text})}
               />
@@ -224,6 +233,7 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
                 keyboardType={'default'}
                 style={styles.text_input}
                 placeholder="Enter the adress"
+                maxLength={150}
                 value={adress}
                 onChangeText={(text) => setForm({...form, adress: text})}
               />
@@ -233,9 +243,35 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
                 keyboardType={'phone-pad'}
                 style={styles.text_input}
                 placeholder="+7XXXZZZOORR"
+                maxLength={12}
                 value={phone}
                 onChangeText={(text) => setForm({...form, phone: text})}
               />
+              <TouchableOpacity
+                style={[styles.text_input, {flex: 1, justifyContent: 'center'}]}
+                onPress={() => setIsMetro(!isMetro)}>
+                {metroSelected && metroSelected ? (
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View
+                      style={[
+                        {backgroundColor: `${metroSelected.color}`},
+                        styles.metro_icon,
+                      ]}>
+                      <Text>{metroSelected.number}</Text>
+                    </View>
+                    <Text
+                      style={{
+                        alignItems: 'center',
+                        fontSize: 16,
+                        marginLeft: 10,
+                      }}>
+                      {metroSelected.name}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text>Выберите метро</Text>
+                )}
+              </TouchableOpacity>
             </View>
             <View style={styles.button_container}>
               <TouchableOpacity
@@ -246,6 +282,11 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
               </TouchableOpacity>
             </View>
           </View>
+          <MetroModal
+            hide={isMetro}
+            close={() => setIsMetro(false)}
+            info={infoMetro}
+          />
         </ScrollView>
       </View>
     </Modal>
@@ -253,11 +294,7 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
 }
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    padding: 20,
-  },
+  modalContainer: {},
   image_container: {
     // flex: 1,
     flexDirection: 'row',
@@ -317,5 +354,14 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     marginLeft: 5,
     color: mlColors.light_red,
+  },
+  metro_icon: {
+    padding: 5,
+    width: 30,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 3,
+    borderRadius: 5,
   },
 });

@@ -1,20 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, Pressable} from 'react-native';
-import axios from 'axios';
-import {getToken, setAuthData, getAuthData} from '../../utils/asyncStorage';
-import {
-  dimensionWidth,
-  dimensionHeight,
-  apiUrl,
-  imageUrl,
-  mlColors,
-} from '../../configs/config';
+import React, {useState} from 'react';
+import {StyleSheet, ScrollView, Text, View, Pressable} from 'react-native';
+import {dimensionWidth, mlColors} from '../../configs/config';
 import ProfileInfoModal from './ProfileInfoModal';
-import USER_LOGO from '../../assets/images/user.png';
 import ProfileImage from './ProfileImage';
-import {ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import {TouchableOpacity} from '@gorhom/bottom-sheet';
 export default function ProfileAbout({bioData}) {
   const [modalInfo, setModalInfo] = useState(false);
 
@@ -26,44 +16,42 @@ export default function ProfileAbout({bioData}) {
         }}>
         <Text
           style={{
-            fontWeight: '600',
+            fontWeight: 'bold',
             fontSize: 18,
             width: dimensionWidth / 1.7,
           }}>
           {bioData.name}
         </Text>
-        <Text
-          style={{
-            fontWeight: '400',
-            fontSize: 14,
-            width: dimensionWidth / 1.7,
-          }}>
-          {bioData.status}
-        </Text>
-        <Pressable onPress={() => setModalInfo(!modalInfo)}>
+        <TouchableOpacity
+          style={{flexDirection: 'row', alignItems: 'center'}}
+          onPress={() => setModalInfo(!modalInfo)}>
+          <Icon
+            style={{
+              color: mlColors.light_blue,
+            }}
+            name="caret-down-outline"
+            size={24}
+          />
           <Text
             style={{
-              textAlign: 'left',
-              paddingTop: 10,
               color: mlColors.light_blue,
               alignContent: 'center',
             }}>
-            <Icon name="create-outline" size={24} />
             Редактировать
           </Text>
-        </Pressable>
+        </TouchableOpacity>
       </View>
     );
   };
 
   return (
-    <ScrollView>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <ProfileImage bioData={bioData} />
         <ProfileBioInfo />
       </View>
       <View style={styles.bio_container}>
-        <Text>{bioData.bio ? bioData.bio : 'Расскажите о себе!'}</Text>
+        <Text>{bioData.bio ? bioData.bio : 'Расскажи о себе!'}</Text>
         <Text>{bioData.company}</Text>
       </View>
       <ProfileInfoModal

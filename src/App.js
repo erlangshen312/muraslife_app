@@ -29,6 +29,11 @@ import PostLists from './screens/profile/post/PostLists';
 import Settings from './screens/profile/settings/Settings';
 import Faq from './screens/profile/settings/Faq';
 import AboutApp from './screens/profile/settings/AboutApp';
+import Notification from "./screens/profile/notification/Notification";
+
+
+
+
 
 import {
     getAuthData,
@@ -58,7 +63,10 @@ const DashboardStackScreen = () => (
         <DashboardStack.Screen
             name="Dashboard"
             component={Dashboard}
-            options={{animationEnabled: false}}
+            options={{
+                headerShown:false,
+                animationEnabled: false
+            }}
         />
         <DashboardStack.Screen
             name="Details"
@@ -111,6 +119,11 @@ const ProfileStackScreen = () => (
         <ProfileStack.Screen
             name="App"
             component={AboutApp}
+            options={{animationEnabled: false}}
+        />
+        <ProfileStack.Screen
+            name="Notification"
+            component={Notification}
             options={{animationEnabled: false}}
         />
     </ProfileStack.Navigator>

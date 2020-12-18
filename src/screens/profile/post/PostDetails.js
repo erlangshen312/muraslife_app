@@ -1,21 +1,15 @@
 import React, {useLayoutEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {
   dimensionWidth,
   dimensionHeight,
-  mlColors, apiUrl,
+  mlColors,
+  apiUrl,
 } from '../../../configs/config';
 
 import {Icon} from 'react-native-vector-icons/Ionicons';
 
 export default function PostDetails({route}) {
-
   const {item} = route.params;
   const {_handleDeletePost} = route.params;
 
