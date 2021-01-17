@@ -13,13 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import {apiUrl} from '../configs/config';
 import {ScrollView} from 'react-native-gesture-handler';
-import { getToken } from '../utils/asyncStorage';
-
-const config = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
+import {getToken} from '../utils/asyncStorage';
 
 export default function CategoryModal({hide, close, info}) {
   const [text, setQuery] = useState('');
@@ -33,13 +27,11 @@ export default function CategoryModal({hide, close, info}) {
         'x-auth-token': token,
       },
     });
-    console.warn('category:', res.data);
     setData(res.data);
   };
 
   useEffect(() => {
     fetchAPI();
-    console.log('fetch is called');
   }, []);
 
   const _handleSelected = (item) => {

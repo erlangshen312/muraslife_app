@@ -88,7 +88,7 @@ export default function PostLists({posts, getUserPostsList}) {
               key={item._id}
               style={{
                 top: 30,
-                padding: 20,
+                padding: 5,
                 backgroundColor: '#fff',
                 margin: 5,
               }}

@@ -7,8 +7,15 @@ import {
   View,
   TouchableOpacity,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  mlColors,
+  ITEM_HEIGHT,
+  ITEM_WIDTH,
+  dimensionWidth,
+} from '../configs/config';
 import PostsLists from './PostsLists';
 
 export default function FindByCategoryModal({
@@ -35,29 +42,37 @@ export default function FindByCategoryModal({
       animationType="fade"
       transparent={false}
       visible={hide}
-      onRequestClose={() => this.hide}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{info && info.title}</Text>
-        <TouchableOpacity onPressOut={() => close()}>
-          <Icon name="close-outline" size={34} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.search}>
-        <TextInput
-          style={styles.input}
-          placeholder="Поиск по названию"
-          value={text}
-          onChangeText={(text) => setQuery(text)}
+      onRequestClose={() => this.hide}
+      presentationStyle="overFullScreen">
+      <View
+        style={{
+          backgroundColor: mlColors.white,
+          height: ITEM_HEIGHT * ITEM_WIDTH,
+        }}>
+        <View style={styles.header}>
+          <Text style={styles.title}>{info && info.title}</Text>
+          <TouchableOpacity onPressOut={() => close()}>
+            <Icon name="close-outline" size={34} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.search}>
+          <Icon name="search-outline" size={22} style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Поиск по названию"
+            value={text}
+            onChangeText={(text) => setQuery(text)}
+          />
+        </View>
+        <PostsLists
+          type={'category'}
+          close={() => close()}
+          posts={fdata}
+          onRefresh={() => onRefresh()}
+          refreshing={refreshing}
+          scrollRef={scrollRef}
         />
       </View>
-
-      <PostsLists
-        type={'category'}
-        posts={fdata}
-        onRefresh={() => onRefresh()}
-        refreshing={refreshing}
-        scrollRef={scrollRef}
-      />
     </Modal>
   );
 }
@@ -75,15 +90,23 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   search: {
+    marginLeft: 10,
+    marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: mlColors.dark_white,
+    borderRadius: 10,
+  },
+  icon: {
+    color: mlColors.light_brown,
     paddingLeft: 10,
-    paddingRight: 10,
   },
   input: {
-    height: 55,
-    width: '100%',
-    backgroundColor: 'rgba(236,239,241 ,1)',
-    paddingLeft: 20,
-    borderRadius: 10,
+    height: 50,
+    alignItems: 'flex-start',
+    fontSize: 17,
+    width: dimensionWidth / 1.15,
+    paddingLeft: 10,
   },
   list: {
     marginTop: 10,

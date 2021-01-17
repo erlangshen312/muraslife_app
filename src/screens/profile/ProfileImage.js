@@ -121,13 +121,14 @@ export default function ProfileImage({bioData}) {
     <TouchableOpacity onPress={() => _handleChooseAvatar()}>
       <Image
         source={
-          typeof avatar === 'undefined'
-            ? {uri: apiUrl + '/' + bioData.avatar}
-            : avatar
+          // typeof avatar === 'undefined'
+          //   ? {uri: apiUrl + '/' + bioData.avatar}
+          //   : avatar
+          USER_LOGO
         }
         style={{
-          width: 130,
-          height: 130,
+          width: 90,
+          height: 90,
           borderRadius: 100,
           margin: 10,
         }}

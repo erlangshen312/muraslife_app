@@ -1,7 +1,14 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {View, SafeAreaView, StyleSheet, Linking, Alert} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+  Alert,
+} from 'react-native';
 import axios from 'axios';
-import {apiUrl} from '../../configs/config';
+import {apiUrl, mlColors} from '../../configs/config';
 import {ActionSheet} from 'react-native-cross-actionsheet/index';
 import Search from './header/Search';
 import Category from './header/Category';
@@ -44,11 +51,11 @@ const Dashboard = ({navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={{backgroundColor: '#f5f5f5'}}>
-      <View style={{margin: 5}}>
+    <SafeAreaView style={{backgroundColor: mlColors.white}}>
+      <View style={{padding: 10}}>
         <Search />
-        <Category />
       </View>
+      <Category />
       <PostsLists
         type={'dashboard'}
         posts={posts}

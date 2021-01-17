@@ -2,12 +2,35 @@ import {Dimensions} from 'react-native';
 
 //use niceColors lib
 
-export const apiUrl = 'http://localhost:5000';
-export const baseUrl = 'http://localhost:5000';
-export const imageUrl = 'http://localhost:5000';
-// export const apiUrl = 'https://muras.life';
-// export const baseUrl = 'https://muras.life';
-// export const imageUrl = 'https://muras.life';
+export const configs = {
+  language: {
+    ru: {
+      code: 'ru-RU',
+      name: 'Русский',
+      short: 'ru',
+      active: true,
+    },
+    en: {
+      code: 'en-US',
+      name: 'English',
+      short: 'en',
+      active: true,
+    },
+    ky: {
+      code: 'ky-KY',
+      name: 'Кыргызча',
+      short: 'ky',
+      active: true,
+    },
+  },
+};
+
+// export const apiUrl = 'http://localhost:5000';
+// export const baseUrl = 'http://localhost:5000';
+// export const imageUrl = 'http://localhost:5000';
+export const apiUrl = 'https://muras.life';
+export const baseUrl = 'https://muras.life';
+export const imageUrl = 'https://muras.life';
 
 //NEWS ELGEZIT
 export const newsUrl = 'https://elgezit.kg/wp-json/wp/v2/posts';
@@ -17,7 +40,7 @@ export const TELEGRAMURL = 'https://t.me/';
 
 export const globalConfig = {
   RUB: 'Руб',
-  SOM: 'Сом',
+  SOM: 'Cом',
 };
 
 const {width, height} = Dimensions.get('screen');
@@ -29,8 +52,14 @@ export const dimensionHeight = Dimensions.get('screen').height;
 
 //COLORS
 export const mlColors = {
-  white: '#FFF',
+  card: '#eaeff7',
+  text: '#DDD',
+  note: '#606060',
+
   brown: '#CFD8DC',
+  light_brown: '#9E9E9E',
+  white: '#FFFFFF',
+  dark_white: '#EEEEEE',
   light_black: '#B0BEC5',
   black: '#455A64',
   blue: '#2196F3',

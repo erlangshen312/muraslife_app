@@ -1,10 +1,16 @@
 import React, {useState} from 'react';
-import {StyleSheet, ScrollView, Text, View, Pressable} from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+} from 'react-native';
 import {dimensionWidth, mlColors} from '../../configs/config';
 import ProfileInfoModal from './ProfileInfoModal';
 import ProfileImage from './ProfileImage';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {TouchableOpacity} from '@gorhom/bottom-sheet';
+
 export default function ProfileAbout({bioData}) {
   const [modalInfo, setModalInfo] = useState(false);
 
@@ -13,33 +19,21 @@ export default function ProfileAbout({bioData}) {
       <View
         style={{
           alignSelf: 'center',
+          marginHorizontal: 5,
         }}>
         <Text
+          numberOfLines={1}
           style={{
             fontWeight: 'bold',
             fontSize: 18,
-            width: dimensionWidth / 1.7,
+            flexShrink: 1,
+            paddingBottom: 5,
           }}>
           {bioData.name}
         </Text>
-        <TouchableOpacity
-          style={{flexDirection: 'row', alignItems: 'center'}}
-          onPress={() => setModalInfo(!modalInfo)}>
-          <Icon
-            style={{
-              color: mlColors.light_blue,
-            }}
-            name="caret-down-outline"
-            size={24}
-          />
-          <Text
-            style={{
-              color: mlColors.light_blue,
-              alignContent: 'center',
-            }}>
-            Редактировать
-          </Text>
-        </TouchableOpacity>
+        <Text numberOfLines={1}>
+          {bioData.bio ? bioData.bio : 'Расскажи о себе!'}
+        </Text>
       </View>
     );
   };
@@ -51,8 +45,25 @@ export default function ProfileAbout({bioData}) {
         <ProfileBioInfo />
       </View>
       <View style={styles.bio_container}>
-        <Text>{bioData.bio ? bioData.bio : 'Расскажи о себе!'}</Text>
-        <Text>{bioData.company}</Text>
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: mlColors.dark_white,
+            paddingVertical: 12,
+            justifyContent: 'center',
+            borderRadius: 10,
+          }}
+          onPress={() => setModalInfo(!modalInfo)}>
+          <Text
+            style={{
+              color: mlColors.dark_blue,
+              fontWeight: 'bold',
+              fontSize: 14,
+            }}>
+            Редактировать
+          </Text>
+        </TouchableOpacity>
       </View>
       <ProfileInfoModal
         modalInfo={modalInfo}

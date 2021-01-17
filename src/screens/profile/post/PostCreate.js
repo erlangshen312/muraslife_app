@@ -32,8 +32,8 @@ export default function PostCreate({route, navigation}) {
   const ITEM_HEIGHT = height * 0.75;
 
   function goBack() {
-    navigation.goBack(null);
     getUserPostsList();
+    navigation.goBack(null);
   }
 
   const [form, setForm] = useState({
@@ -126,7 +126,7 @@ export default function PostCreate({route, navigation}) {
             multiline={true}
             numberOfLines={12}
             placeholder="Enter the note"
-            maxLength={500}
+            maxLength={1200}
             value={note}
             onChangeText={(text) => setForm({...form, note: text})}
           />

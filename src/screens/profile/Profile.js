@@ -18,8 +18,7 @@ import {getAuthData, getToken, setAuthData} from '../../utils/asyncStorage';
 import ProfileAbout from './ProfileAbout';
 import PostLists from './post/PostLists';
 import axios from 'axios';
-import {apiUrl} from '../../configs/config';
-import PostsLists from '../../components/PostsLists';
+import {apiUrl, mlColors} from '../../configs/config';
 
 const wait = (timeout) => {
   return new Promise((resolve) => {
@@ -43,6 +42,11 @@ const Profile = ({navigation}) => {
           <Icon name="notifications-outline" size={24} />
         </TouchableOpacity>
       ),
+      headerTitle: () => (
+        <Text style={{fontWeight: 'bold', fontSize: 20}}>
+          {bioData && bioData.name}
+        </Text>
+      ),
       headerRight: () => (
         <TouchableOpacity
           style={{marginRight: 10, padding: 3}}
@@ -64,7 +68,7 @@ const Profile = ({navigation}) => {
         },
       };
       const res = await axios.get(`${apiUrl}/api/auth`, config);
-      await setBioData(res.data);
+      setBioData(res.data);
       await setAuthData(res.data);
     } catch (error) {
       const warning = error.response.data.errors;
@@ -95,7 +99,7 @@ const Profile = ({navigation}) => {
         },
       );
       // if (res.data === 'undefined') return true;
-      await setPosts(res.data);
+      setPosts(res.data);
     } catch (err) {
       const er = err.response.data.errors;
       console.warn('PostLists', er);
@@ -114,36 +118,57 @@ const Profile = ({navigation}) => {
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
-  console.log(posts);
-
   return (
     <ScrollView
+      style={{backgroundColor: mlColors.white}}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }>
       {bioData && <ProfileAbout bioData={bioData} />}
       <View style={styles.profile_count}>
-        <Text style={{margin: 10, fontWeight: 'bold'}}>
-          Всего: {posts.length}
-        </Text>
         <TouchableOpacity
           style={{
-            flexDirection: 'row',
             alignItems: 'center',
           }}
           onPress={() => navigation.navigate('Create', {getUserPostsList})}>
-          <Icon name="add-circle-outline" size={30} />
-          <Text style={{fontWeight: 'bold'}}> Добавить объявление</Text>
+          <Icon
+            style={{color: mlColors.dark_blue}}
+            name="create-outline"
+            size={34}
+          />
+          <Text style={{fontWeight: 'bold', color: mlColors.dark_blue}}>
+            Объявление
+          </Text>
         </TouchableOpacity>
       </View>
-      <PostsLists
+      {/* <PostsLists
         type={'profile'}
         posts={posts}
         onRefresh={() => onRefresh()}
         refreshing={refreshing}
         scrollRef={scrollRef}
-      />
+      /> */}
+      <View style={{flexDirection: 'row'}}>
+        <Text
+          style={{
+            color: mlColors.dark,
+            fontWeight: 'bold',
+            fontSize: 14,
+            marginHorizontal: 10,
+            marginVertical: 10,
+          }}>
+          ОБЪЯВЛЕНИЯ
+        </Text>
+        <Text
+          style={{
+            color: mlColors.light_brown,
+            fontSize: 14,
+            marginVertical: 10,
+          }}>
+          {posts.length}
+        </Text>
+      </View>
       {posts && <PostLists posts={posts} getUserPostsList={getUserPostsList} />}
     </ScrollView>
   );
@@ -153,11 +178,10 @@ export default Profile;
 
 const styles = StyleSheet.create({
   profile_count: {
-    // top: 30,
-    padding: 10,
-    backgroundColor: '#fff',
-    margin: 5,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    padding: 10,
+    margin: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: mlColors.dark_white,
   },
 });

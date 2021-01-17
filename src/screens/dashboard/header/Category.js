@@ -6,6 +6,7 @@ import {apiUrl, mlColors} from '../../../configs/config';
 import CategoryMenu from './CategoryMenu';
 import {getToken} from '../../../utils/asyncStorage';
 import FindByCategoryModal from '../../../components/FindByCategoryModal';
+import CategoryModal from '../../../components/CategoryModal';
 
 const wait = (timeout) => {
   return new Promise((resolve) => {
@@ -38,11 +39,10 @@ const Category = () => {
           'x-auth-token': token,
         },
       });
-      console.log(res.data);
       setCategories(res.data);
     } catch (err) {
       const er = err.response.data;
-      console.warn('Categories Lists: ', er);
+      console.warn(er);
     }
   };
 
@@ -54,52 +54,56 @@ const Category = () => {
 
   const fetchAPI = async (item) => {
     const token = await getToken();
-    if (typeof item === 'undefined') {
-      console.log('INFO IS UNDEFINED:', item);
+    try {
+      const res = await axios.get(`${apiUrl}/api/category/find/${item._id}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      });
+      setData(res.data);
+    } catch (error) {
+      console.error(error);
     }
-    if (item !== 'null')
-      try {
-        console.log('item ID 2', item);
-        const res = await axios.get(`${apiUrl}/api/category/find/${item._id}`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'x-auth-token': token,
-          },
-        });
-        // res.data !== null
-        setData(res.data);
-      } catch (error) {
-        console.error(error);
-      }
   };
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.menu} onPress={() => setIsModal(true)}>
+      {/* <TouchableOpacity style={styles.menu} onPress={() => setIsModal(true)}>
         <Icon name="menu-outline" size={22} />
-      </TouchableOpacity>
-      <FlatList
-        data={categories}
-        keyExtractor={(item, index) => item._id}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({item}) => {
-          return (
-            <TouchableOpacity
-              onPress={() => _handleChoosed(item)}
-              style={styles.category}>
-              <Text style={styles.category_text}>{item.title}</Text>
-            </TouchableOpacity>
-          );
-        }}
+      </TouchableOpacity> */}
+      <View style={{paddingLeft: 10}}>
+        <FlatList
+          data={categories}
+          keyExtractor={(item, index) => index}
+          horizontal={true}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item}) => {
+            return (
+              <TouchableOpacity
+                onPress={() => _handleChoosed(item)}
+                style={styles.category}>
+                {/* <Icon
+                  name="close-outline"
+                  size={40}
+                  style={styles.category_icon}
+                /> */}
+                <Text style={styles.category_text}>{item.title}</Text>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      </View>
+      <CategoryModal
+        info={categories}
+        hide={isModal}
+        close={() => setIsModal(false)}
       />
-      <CategoryMenu isModal={isModal} closeIsModal={() => setIsModal(false)} />
       <FindByCategoryModal
         hide={isCategory}
         close={() => setIsCategory(false)}
@@ -115,24 +119,41 @@ const Category = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 5,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingBottom: 5,
   },
   menu: {
-    backgroundColor: mlColors.white,
+    backgroundColor: mlColors.dark,
     padding: 8,
     // marginRight:2,
     borderRadius: 5,
   },
   category: {
     backgroundColor: mlColors.white,
-    marginLeft: 3,
+    marginEnd: 10,
     padding: 10,
-    borderRadius: 5,
+    alignItems: 'center',
+    borderRadius: 10,
+    minWidth: 100,
+    maxWidth: 250,
+    margin: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   category_text: {
-    fontSize: 17,
+    color: mlColors.note,
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  category_icon: {
+    color: mlColors.light_brown,
   },
 });
 
