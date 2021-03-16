@@ -16,6 +16,7 @@ import {
   mlColors,
   apiUrl,
   dimensionHeight,
+  API,
 } from '../../configs/config';
 import {getToken, setAuthData, setToken} from '../../utils/asyncStorage';
 
@@ -34,20 +35,21 @@ const Login = () => {
       },
     };
     const body = JSON.stringify({email, password});
-
     //ИСПРАВИТЬ ПРОВЕРКУ
     if (email.length === '' || password.length === '') {
       return setWarning('Укажите почту');
     }
     try {
-      const res = await axios.post(apiUrl + '/api/auth', body, config);
+      const res = await axios.post(`${API.apiv1}/api/auth`, body, config);
       try {
         await setToken(res.data.token);
         signIn();
       } catch (err) {
+        console.log('RESPONSE ERROR:', err);
         console.warn(err);
       }
     } catch (error) {
+      console.log('ERROR IN LOGIN:', error);
       const warning = error.response.data.errors.map((er) => er.msg);
       setWarning(warning);
     }

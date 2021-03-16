@@ -25,12 +25,12 @@ export const configs = {
   },
 };
 
-// export const apiUrl = 'http://localhost:5000';
-// export const baseUrl = 'http://localhost:5000';
-// export const imageUrl = 'http://localhost:5000';
-export const apiUrl = 'https://muras.life';
-export const baseUrl = 'https://muras.life';
-export const imageUrl = 'https://muras.life';
+export const API = {
+  apiv1: 'http://192.168.1.74:5000',
+  // apiv1: 'http://192.168.43.167:5000',
+  // apiv1: 'http://localhost:5000',
+  // apiv1: 'https://muras.life',
+};
 
 //NEWS ELGEZIT
 export const newsUrl = 'https://elgezit.kg/wp-json/wp/v2/posts';
@@ -55,6 +55,7 @@ export const mlColors = {
   card: '#eaeff7',
   text: '#DDD',
   note: '#606060',
+  dark: '#000',
 
   brown: '#CFD8DC',
   light_brown: '#9E9E9E',

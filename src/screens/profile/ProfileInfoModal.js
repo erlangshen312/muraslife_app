@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {apiUrl, dimensionWidth, mlColors} from '../../configs/config';
+import {API, apiUrl, dimensionWidth, mlColors} from '../../configs/config';
 import {getAuthData, getToken, setAuthData} from '../../utils/asyncStorage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -132,7 +132,7 @@ export default function ProfileInfoModal({modalInfo, exitModalInfo}) {
       },
     };
     try {
-      const res = await axios.post(`${apiUrl}/api/users/add`, formData, config);
+      const res = await axios.post(`${API.apiv1}/api/users/add`, formData, config);
       console.log(res.data);
       await setAuthData(res.data);
       exitModalInfo();

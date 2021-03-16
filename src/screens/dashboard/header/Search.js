@@ -5,12 +5,14 @@ import {
   TextInput,
   TouchableOpacity,
   Text,
+  Image,
 } from 'react-native';
-import {dimensionWidth, mlColors} from '../../../configs/config';
+import {ITEM_WIDTH, mlColors, ITEM_HEIGHT} from '../../../configs/config';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Search = () => {
   return (
+    // <View style={{flex: 1, flexDirection: 'row'}}>
     <View style={styles.container}>
       <Icon name="search-outline" size={22} style={styles.icon} />
       <TextInput
@@ -18,7 +20,7 @@ const Search = () => {
         autoCorrect={false}
         keyboardType={'default'}
         style={styles.input}
-        placeholder="Поиск "
+        placeholder="Поиск по названию"
         placeholderTextColor={mlColors.light_brown}
         // value={title}
       />
@@ -26,6 +28,25 @@ const Search = () => {
       {/*    <Text>Стереть</Text>*/}
       {/*</TouchableOpacity>*/}
     </View>
+    // <TouchableOpacity
+    //   style={{
+    //     position: 'absolute',
+    //     bottom: 0,
+    //     right: 0,
+    //     top: 0,
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    //     padding: 10,
+    //   }}>
+    //   <Image
+    //     style={{
+    //       width: 25,
+    //       height: 25,
+    //     }}
+    //     source={require('../../../assets/images/metro.png')}
+    //   />
+    // </TouchableOpacity>
+    // </View>
   );
 };
 
@@ -33,19 +54,24 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: mlColors.dark_white,
-    borderRadius: 10,
+    backgroundColor: mlColors.white,
+    borderRadius: 5,
+    borderColor: mlColors.dark_white,
+    borderWidth: 2,
   },
   icon: {
     color: mlColors.light_brown,
     paddingLeft: 10,
   },
   input: {
-    height: 50,
+    height: 45,
     alignItems: 'flex-start',
     fontSize: 17,
-    width: dimensionWidth / 1.15,
+    // width: dimensionWidth / 1.15,
+    width: ITEM_WIDTH / 1.15,
     paddingLeft: 10,
+    fontFamily: 'SourceSansPro-Regular',
+
     // color: mlColors.text,
   },
   clear: {},

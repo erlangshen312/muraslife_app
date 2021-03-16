@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import {apiUrl, dimensionWidth, mlColors} from '../../../configs/config';
+import {API, apiUrl, dimensionWidth, mlColors} from '../../../configs/config';
 import {getToken, getAuthData} from '../../../utils/asyncStorage';
 import CategoryListModal from './CategoryListModal';
 import MetroModal from '../../../components/MetroModal';
@@ -72,7 +72,7 @@ export default function PostCreate({route, navigation}) {
       },
     };
     try {
-      const res = await axios.post(`${apiUrl}/api/posts/`, formData, config);
+      const res = await axios.post(`${API.apiv1}/api/posts/`, formData, config);
       // await setAuthData(res.data);
       if (res.status !== 200)
         return Alert.alert('Ошибка!', 'Проверьте соединение с интернетом.');

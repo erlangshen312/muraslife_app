@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import {apiUrl} from '../configs/config';
+import {API, apiUrl} from '../configs/config';
 import {ScrollView} from 'react-native-gesture-handler';
 import {getToken} from '../utils/asyncStorage';
 
@@ -21,7 +21,7 @@ export default function CategoryModal({hide, close, info}) {
 
   const fetchAPI = async () => {
     const token = await getToken();
-    const res = await axios.get(`${apiUrl}/api/category/`, {
+    const res = await axios.get(`${API.apiv1}/api/category/`, {
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': token,

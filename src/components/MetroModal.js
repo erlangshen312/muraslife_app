@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import {apiUrl} from '../configs/config';
+import {API, apiUrl} from '../configs/config';
 import {getToken} from '../utils/asyncStorage';
 
 const config = {
@@ -26,7 +26,7 @@ export default function MetroModal({hide, close, info}) {
 
   const fetchAPI = async () => {
     const token = await getToken();
-    const res = await axios.get(`${apiUrl}/api/metro`, {
+    const res = await axios.get(`${API.apiv1}/api/metro`, {
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': token,

@@ -12,7 +12,7 @@ import {
   Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {apiUrl} from '../../../configs/config';
+import {API, apiUrl} from '../../../configs/config';
 export default function MetroListModal({
   isMetroShow,
   _handlerClose,
@@ -26,7 +26,7 @@ export default function MetroListModal({
   const ITEM_HEIGHT = height * 0.75;
 
   const fetchAPI = () => {
-    return fetch(`${apiUrl}/api/metro/`)
+    return fetch(`${API.apiv1}/api/metro/`)
       .then((response) => response.json())
       .then((data) => {
         setData(data);

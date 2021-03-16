@@ -1,8 +1,15 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import axios from 'axios';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableHighlight,
+  View,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {apiUrl, mlColors} from '../../../configs/config';
+import {API, mlColors} from '../../../configs/config';
 import CategoryMenu from './CategoryMenu';
 import {getToken} from '../../../utils/asyncStorage';
 import FindByCategoryModal from '../../../components/FindByCategoryModal';
@@ -33,7 +40,7 @@ const Category = () => {
   const getCategory = async () => {
     const token = await getToken();
     try {
-      const res = await axios.get(`${apiUrl}/api/category`, {
+      const res = await axios.get(`${API.apiv1}/api/category`, {
         headers: {
           'Content-Type': 'application/json',
           'x-auth-token': token,
@@ -55,12 +62,15 @@ const Category = () => {
   const fetchAPI = async (item) => {
     const token = await getToken();
     try {
-      const res = await axios.get(`${apiUrl}/api/category/find/${item._id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token,
+      const res = await axios.get(
+        `${API.apiv1}/api/category/find/${item._id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token,
+          },
         },
-      });
+      );
       setData(res.data);
     } catch (error) {
       console.error(error);
@@ -80,21 +90,22 @@ const Category = () => {
       <View style={{paddingLeft: 10}}>
         <FlatList
           data={categories}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           renderItem={({item}) => {
             return (
-              <TouchableOpacity
+              <TouchableHighlight
+                underlayColor={mlColors.light_blue}
                 onPress={() => _handleChoosed(item)}
                 style={styles.category}>
                 {/* <Icon
                   name="close-outline"
-                  size={40}
+                  size={10}
                   style={styles.category_icon}
                 /> */}
                 <Text style={styles.category_text}>{item.title}</Text>
-              </TouchableOpacity>
+              </TouchableHighlight>
             );
           }}
         />
@@ -134,7 +145,7 @@ const styles = StyleSheet.create({
     marginEnd: 10,
     padding: 10,
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 5,
     minWidth: 100,
     maxWidth: 250,
     margin: 2,
@@ -143,14 +154,15 @@ const styles = StyleSheet.create({
       width: 0,
       height: 1,
     },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 1.41,
-    elevation: 2,
+    elevation: 3,
   },
   category_text: {
-    color: mlColors.note,
-    fontSize: 18,
-    fontWeight: '600',
+    color: mlColors.blue,
+    fontSize: 17,
+    // fontWeight: '600',
+    fontFamily: 'SourceSansPro-SemiBold',
   },
   category_icon: {
     color: mlColors.light_brown,

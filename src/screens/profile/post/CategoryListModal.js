@@ -8,13 +8,13 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {apiUrl, mlColors} from '../../../configs/config';
+import {API, mlColors} from '../../../configs/config';
 export default function CategoryListModal({isCategory, close, info}) {
   const [text, setQuery] = useState('');
   const [data, setData] = useState([]);
 
   const fetchAPI = () => {
-    return fetch(`${apiUrl}/api/category/`)
+    return fetch(`${API.apiv1}/api/category/`)
       .then((response) => response.json())
       .then((data) => {
         setData(data);

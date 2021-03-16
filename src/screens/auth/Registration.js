@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {AuthContext} from '../../AuthContext';
 
-import {apiUrl, baseUrl, mlColors} from '../../configs/config';
+import {API, mlColors} from '../../configs/config';
 import {getToken, setToken} from '../../utils/asyncStorage';
 
 const Registration = () => {
@@ -32,7 +32,7 @@ const Registration = () => {
       const config = {headers: {'Content-Type': 'application/json'}};
       const body = JSON.stringify({name, email, password});
       try {
-        const res = await axios.post(baseUrl + '/api/users', body, config);
+        const res = await axios.post(`${API.apiv1}/api/users`, body, config);
         try {
           console.log(res);
           await setToken(res.data.token);

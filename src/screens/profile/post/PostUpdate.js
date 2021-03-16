@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import axios from 'axios';
-import {apiUrl, dimensionWidth, mlColors} from '../../../configs/config';
+import {API, apiUrl, dimensionWidth, mlColors} from '../../../configs/config';
 import {getToken, getAuthData} from '../../../utils/asyncStorage';
 import MetroModal from '../../../components/MetroModal';
 import CategoryModal from '../../../components/CategoryModal';
@@ -91,7 +91,7 @@ export default function PostUpdate({route, navigation}) {
     };
     try {
       const res = await axios.post(
-        `${apiUrl}/api/posts/update`,
+        `${API.apiv1}/api/posts/update`,
         formData,
         config,
       );

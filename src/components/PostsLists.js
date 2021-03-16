@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   RefreshControl,
@@ -7,10 +7,13 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  Modal,
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useNavigation} from '@react-navigation/native';
+import {ActionSheet} from 'react-native-cross-actionsheet';
 import {
   apiUrl,
   dimensionHeight,
@@ -18,6 +21,7 @@ import {
   mlColors,
   ITEM_WIDTH,
   ITEM_HEIGHT,
+  API,
 } from '../configs/config';
 import {telephone, whatsapp} from './talk';
 import Banners from '../screens/dashboard/header/Banners';
@@ -25,6 +29,14 @@ import {openActions} from './actions';
 import {metro, location} from './find';
 import USER_LOGO from '../assets/images/user.png';
 import autoprefixer from 'autoprefixer';
+import moment from 'moment';
+import 'moment/locale/ru';
+import momentDurationFormatSetup from 'moment-duration-format';
+// import {snack} from '../utils/snack';
+import {WebView} from 'react-native-webview';
+import {getAuthData} from '../utils/asyncStorage';
+
+moment.locale('ru');
 
 export default function PostsLists({
   type,
@@ -33,19 +45,139 @@ export default function PostsLists({
   onRefresh,
   refreshing,
   scrollRef,
+  getUserPostsList,
 }) {
   const navigation = useNavigation();
+  const _handleOpenDetail = async (item, close) => {
+    navigation.navigate('Details', {item}),
+      typeof close !== 'undefined' && close();
+  };
+  const [isWebViewModal, setIsWebViewModal] = useState(false);
+  const [val, setVal] = useState();
+  const [authData, setAuthData] = useState();
+  const onNavigationStateChange = (navState) => {
+    if (navState.url.indexOf('https://www.google.com') === 0) {
+      const regex = /#access_token=(.+)/;
+      let accessToken = navState.url.match(regex)[1];
+      console.log(accessToken);
+    }
+  };
 
-  let dimensions = Dimensions.get('screen');
-  let imageHeight = Math.round((dimensions.width * 9) / 16);
-  let imageWidth = dimensions.width;
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  console.log(close);
-
-  function _handleOpenDetail(item) {
-    () => close();
-    navigation.navigate('Details', {item});
+  async function _handleWeb(code) {
+    // Сделать проверку на то что юзер указал метро или нет.
+    // Если нету то показываем нотив или снекбар и все
+    // Если есть то показываем и открываем WebView
+    const data = await getAuthData();
+    setIsWebViewModal(true), setAuthData(data);
+    setVal(code);
   }
+
+  const timeLeft = (item) => {
+    const currentDayTime = moment().format('YYYY-MM-DDTHH:mm:ss');
+    const finishDayTime = moment(item.timer).format('YYYY-MM-DDTHH:mm:ss');
+    const ms = moment(currentDayTime, 'YYYY-MM-DDTHH:mm:ss').diff(
+      moment(finishDayTime, 'YYYY-MM-DDTHH:mm:ss'),
+    );
+    c              
+    const isLeft = moment(currentDayTime).isBefore(finishDayTime);
+    return {hoursLeft, isLeft};
+  };
+  const _handleUpdateTimer = (hoursLeft, isLeft, item) => {
+    console.log(isLeft);
+    // if (isLeft === true)
+    //   return snack(`Сможете поднять только через ${hoursLeft ?? ''} часов`);
+    // if (isLeft === false) return snack(`Допиши код и подправь бэкэнд!`);
+  };
+  const _handleOpenProfileActionSheet = (item) => {
+    const {hoursLeft, isLeft} = timeLeft(item);
+    ActionSheet.options({
+      options: [
+        {
+          text: 'Поднять',
+          onPress: () => {
+            _handleUpdateTimer(hoursLeft, isLeft, item);
+          },
+        },
+        {
+          text: 'Изменить',
+          onPress: () =>
+            navigation.navigate('Update', {item, getUserPostsList}),
+        },
+        {
+          text: 'Удалить',
+          destructive: true,
+          onPress: () => _handleDeletePost(item._id),
+        },
+      ],
+      cancel: {text: 'Назад', onPress: () => console.log('cancel')},
+    });
+
+    // ActionSheet.options({
+    //   options: [
+    //     {
+    //       type: 'item',
+    //       title: 'Позвонить по телефону',
+    //       func: () => telephone(item.phone),
+    //     },
+    //     {
+    //       type: 'item',
+    //       title: 'Написать по WhatsApp',
+    //       func: () => whatsapp(item.phone),
+    //     },
+    //   ],
+    //   cancel: {text: 'Назад', onPress: () => console.log('cancel')},
+    // });
+  };
+
+  const _handleOpenDashboardActionSheet = (item) => {
+    ActionSheet.options({
+      options: [
+        {
+          type: 'item',
+          title: 'Позвонить по телефону',
+          func: () => telephone(item.phone),
+        },
+        {
+          type: 'item',
+          title: 'Написать по WhatsApp',
+          func: () => whatsapp(item.phone),
+        },
+      ],
+      cancel: {text: 'Назад', onPress: () => console.log('cancel')},
+    });
+  };
+
+  // openActions([
+
+  // ]);
+
+  const _handleDeletePost = async (post_id) => {
+    const token = await getToken();
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
+        },
+      };
+      const res = await axios.delete(
+        `${API.apiv1}/api/posts/post/${post_id}`,
+        config,
+      );
+      getUserPostsList();
+    } catch (error) {
+      const warning = error.response.data.errors;
+      console.error(warning);
+    }
+  };
+
+  //FAVORITE
+  const _handleFavorite = (item) => {
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <ScrollView
       style={styles.scroll}
@@ -61,125 +193,140 @@ export default function PostsLists({
             <TouchableOpacity
               style={styles.card}
               key={item._id}
-              onPress={() => _handleOpenDetail(item)}
-              onLongPress={() =>
-                openActions([
-                  {
-                    type: 'item',
-                    title: 'Позвонить по телефону',
-                    func: () => telephone(item.phone),
-                  },
-                  {
-                    type: 'item',
-                    title: 'Написать по WhatsApp',
-                    func: () => whatsapp(item.phone),
-                  },
-                ])
-              }>
+              onPress={() => _handleOpenDetail(item, close)}>
               {/* <View
                 style={{
+                  flex: 1, */}
+              {/* // justifyContent: 'flex-start', // backgroundColor: '#e5e5e5', // */}
+              {/* }}> */}
+              {/* onLongPress=
+                {type === 'Profile'
+                  ? () => _handleOpenProfileActionSheet(item)
+                  : _handleOpenDashboardActionSheet(item)} */}
+              <Image
+                style={{
+                  borderRadius: 5,
+                  width: 135,
+                  height: 100,
+                  // alignSelf: 'center',
+                  // aspectRatio: 5 / 3,
+                }}
+                source={
+                  item.avatar ? {uri: apiUrl + '/' + item.avatar} : USER_LOGO
+                }
+              />
+              {/* </View> */}
+              <View
+                style={{
                   flex: 1,
-                  justifyContent: 'center',
-                  backgroundColor: '#e5e5e5',
+                  paddingHorizontal: 10,
+                  justifyContent: 'space-between',
                 }}>
-                <Image
-                  style={{
-                    width: imageWidth,
-                    height: imageHeight,
-                    alignSelf: 'center',
-                    aspectRatio: 5/3,
-                  }}
-                  source={
-                    item.avatar ? {uri: apiUrl + '/' + item.avatar} : USER_LOGO
-                  }
-                />
-              </View> */}
-              <View style={styles.card_header}>
-                <Text style={styles.card_header_title} numberOfLines={1}>
-                  {item.title}{' '}
+                <Text numberOfLines={2} style={styles.card_header_title}>
+                  {item.title}
                 </Text>
-                <Text style={styles.card_header_cost}>
-                  {item.cost && item.cost + ' ' + globalConfig.RUB}
-                </Text>
-              </View>
-              <View style={styles.card_body}>
-                <Text
-                  style={styles.card_body_note}
-                  numberOfLines={3}
-                  ellipsizeMode="tail">
-                  {item.note}
-                </Text>
-                <TouchableOpacity
-                  style={styles.card_body_metro}
-                  onPress={() => metro(item.code)}>
-                  <View
-                    style={[
-                      {backgroundColor: `${item.color}`},
-                      styles.card_body_metro_icon,
-                    ]}>
-                    <Text>{item.number}</Text>
+                <View>
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text numberOfLines={1} style={styles.card_header_cost}>
+                      {item.cost && item.cost}
+                    </Text>
+                    <FontAwesome5 name="ruble-sign" size={14} />
                   </View>
-                  <Text>{item._metro}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.card_body_address}
-                  onPress={() => location(item.adress)}>
-                  <Icon
-                    name="navigate-circle-outline"
-                    size={24}
-                    style={styles.card_body_address_icon}
-                  />
-                  <Text
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    style={styles.card_body_address_title}>
-                    {item.adress}
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <Text style={styles.card_body_metro_title}>
+                      {item._metro}
+                    </Text>
+                    <View
+                      style={[
+                        {backgroundColor: `${item.color}`},
+                        styles.card_body_metro_icon,
+                      ]}
+                    />
+                  </View>
+                  <Text numberOfLines={2} style={styles.card_body_metro_title}>
+                    {moment(item.date).format('Do MMM HH:MM')}
                   </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.card_footer}>
-                <TouchableOpacity style={styles.card_footer_info}>
-                  <Image
-                    style={styles.card_footer_info_avatar}
-                    source={
-                      item.avatar
-                        ? {uri: apiUrl + '/' + item.avatar}
-                        : USER_LOGO
-                    }
-                  />
-                  <Text style={styles.card_footer_info_name}>{item.name}</Text>
-                </TouchableOpacity>
-                <View style={{flexDirection: 'row'}}>
-                  <TouchableOpacity style={styles.card_footer_like}>
-                    <Icon name="heart-outline" size={20} />
-                    <Text>39</Text>
-                  </TouchableOpacity>
-                  <View style={styles.card_footer_watch}>
-                    <Icon name="eye-outline" size={20} />
-                    <Text>2467</Text>
-                  </View>
                 </View>
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    bottom: -5,
+                    right: -5,
+                    // backgroundColor: 'red',
+                    padding: 5,
+                  }}
+                  onPress={() => _handleFavorite(item)}>
+                  {isFavorite === false ? (
+                    <Icon name="heart-outline" size={22} />
+                  ) : (
+                    <Icon name="heart" size={22} />
+                  )}
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
           ))}
       </View>
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={isWebViewModal}
+        onRequestClose={isWebViewModal}
+        style={{flex: 1}}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Метро</Text>
+          <TouchableOpacity onPressOut={() => setIsWebViewModal(false)}>
+            <Icon name="close-outline" size={34} />
+          </TouchableOpacity>
+        </View>
+        <WebView
+          source={{
+            uri: `https://yandex.ru/metro/moscow?route_from_id=${
+              authData && authData.code
+            }&route_to_id=${val && val}`,
+          }}
+          originWhitelist={['*']}
+          // allowFileAccess={true}
+          // domStorageEnabled={true}
+          // allowUniversalAccessFromFileURLs={true}
+          // allowFileAccessFromFileURLs={true}
+          // mixedContentMode="always"
+          // onNavigationStateChange={onNavigationStateChange}
+          startInLoadingState
+          scalesPageToFit
+          javaScriptEnabled
+          style={{flex: 1, marginTop: 0}}
+        />
+      </Modal>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   scroll: {
-    marginBottom: 95,
+    // marginBottom: 125,
   },
   container: {
     margin: 10,
   },
+  header: {
+    padding: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: Platform.OS === 'android' ? 0 : 40,
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    // fontFamily: 'Source Sans Pro',
+  },
   card: {
     flex: 1,
+    flexDirection: 'row',
     marginBottom: 10,
     padding: 10,
     borderRadius: 5,
-    backgroundColor: mlColors.white,
+    backgroundColor: '#FFF',
     margin: 2,
     shadowColor: '#000',
     shadowOffset: {
@@ -196,19 +343,21 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   card_header_title: {
-    fontWeight: 'bold',
-    fontSize: 15,
+    fontFamily: 'SourceSansPro-Regular',
+    fontSize: 17,
     flexShrink: 1,
   },
   card_header_cost: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: mlColors.green,
+    fontSize: 18,
+    fontFamily: 'SourceSansPro-Bold',
+    color: mlColors.dark,
+    paddingRight: 3,
   },
   card_body: {
     flex: 1,
   },
   card_body_note: {
+    fontFamily: 'SourceSansPro-Regular',
     marginTop: 5,
     marginBottom: 10,
     color: mlColors.note,
@@ -228,12 +377,16 @@ const styles = StyleSheet.create({
   },
   card_body_metro_icon: {
     padding: 3,
-    width: 22,
-    height: 22,
+    width: 8,
+    height: 8,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 5,
-    borderRadius: 5,
+    marginLeft: 5,
+    borderRadius: 100,
+    opacity: 0.7,
+  },
+  card_body_metro_title: {
+    fontFamily: 'SourceSansPro-Regular',
   },
   card_body_address: {
     // paddingHorizontal: 10,
@@ -248,11 +401,14 @@ const styles = StyleSheet.create({
   card_body_address_icon: {
     paddingTop: 5,
     marginRight: 3,
-    color: mlColors.dark_yellow,
+    alignItems: 'center',
+    color: '#e53935',
+    opacity: 0.7,
   },
   card_body_address_title: {
     paddingTop: 4,
     flexShrink: 1,
+    fontFamily: 'SourceSansPro-Regular',
   },
   card_footer: {
     // backgroundColor: 'red',
@@ -272,7 +428,8 @@ const styles = StyleSheet.create({
   },
   card_footer_info_name: {
     marginLeft: 5,
-    color: mlColors.note,
+    color: mlColors.black,
+    fontFamily: 'SourceSansPro-Regular',
   },
   card_footer_like: {
     flexDirection: 'row',

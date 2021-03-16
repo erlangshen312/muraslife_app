@@ -7,13 +7,13 @@ import {
   SafeAreaView,
 } from 'react-native';
 import axios from 'axios';
-import {apiUrl} from '../../../configs/config';
+import {API, apiUrl} from '../../../configs/config';
 import {getToken} from '../../../utils/asyncStorage';
 import {ActionSheet} from 'react-native-cross-actionsheet';
 import {useNavigation} from '@react-navigation/native';
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
-import {snack} from '../../../utils/snack';
+// import {snack} from '../../../utils/snack';
 
 export default function PostLists({posts, getUserPostsList}) {
   const navigation = useNavigation();
@@ -30,9 +30,9 @@ export default function PostLists({posts, getUserPostsList}) {
   };
   const _handleUpdateTimer = (hoursLeft, isLeft, item) => {
     console.log(isLeft);
-    if (isLeft === true)
-      return snack(`Сможете поднять только через ${hoursLeft ?? ''} часов`);
-    if (isLeft === false) return snack(`Допиши код и подправь бэкэнд!`);
+    // if (isLeft === true)
+    //   return snack(`Сможете поднять только через ${hoursLeft ?? ''} часов`);
+    // if (isLeft === false) return snack(`Допиши код и подправь бэкэнд!`);
   };
   const _handleOpenActionSheet = (item) => {
     const {hoursLeft, isLeft} = timeLeft(item);
@@ -69,7 +69,7 @@ export default function PostLists({posts, getUserPostsList}) {
         },
       };
       const res = await axios.delete(
-        `${apiUrl}/api/posts/post/${post_id}`,
+        `${API.apiv1}/api/posts/post/${post_id}`,
         config,
       );
       getUserPostsList();

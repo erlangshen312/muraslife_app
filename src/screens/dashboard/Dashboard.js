@@ -1,15 +1,8 @@
 import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {
-  View,
-  SafeAreaView,
-  TouchableOpacity,
-  StyleSheet,
-  Linking,
-  Alert,
-} from 'react-native';
+import {View, ScrollView, SafeAreaView} from 'react-native';
 import axios from 'axios';
-import {apiUrl, mlColors} from '../../configs/config';
-import {ActionSheet} from 'react-native-cross-actionsheet/index';
+import {API} from '../../configs/config';
+
 import Search from './header/Search';
 import Category from './header/Category';
 import PostsLists from '../../components/PostsLists';
@@ -23,12 +16,11 @@ const wait = (timeout) => {
 const Dashboard = ({navigation}) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [isLike, setIsLike] = useState(false);
   const scrollRef = useRef();
 
   const getAllPostLists = async () => {
     try {
-      const res = await axios.get(apiUrl + '/api/posts', {
+      const res = await axios.get(`${API.apiv1}/api/posts`, {
         headers: {'Content-Type': 'application/json'},
       });
       res.data !== null && setPosts(res.data);
@@ -51,7 +43,12 @@ const Dashboard = ({navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={{backgroundColor: mlColors.white}}>
+    <SafeAreaView
+    // style={{
+    //   backgroundColor: '#FAFAFA',
+    //   marginTop: Platform.OS === 'android' ? 0 : 40,
+    // }}
+    >
       <View style={{padding: 10}}>
         <Search />
       </View>
@@ -66,7 +63,5 @@ const Dashboard = ({navigation}) => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default Dashboard;

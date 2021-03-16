@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Modal,
 } from 'react-native';
 import {
   imageUrl,
@@ -20,110 +21,185 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {phoneCall, whatsapp} from '../../components/talk';
 import {metro, location} from '../../components/find';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import moment from 'moment';
+import 'moment/locale/ru';
+moment.locale('ru');
+import {WebView} from 'react-native-webview';
+import {getAuthData} from '../../utils/asyncStorage';
 
 export default function Details({route, navigation}) {
   const {item} = route.params;
-
+  const [isWebViewModal, setIsWebViewModal] = useState(false);
+  const [val, setVal] = useState();
+  const [authData, setAuthData] = useState();
+  async function _handleWeb(code) {
+    // Сделать проверку на то что юзер указал метро или нет.
+    // Если нету то показываем нотив или снекбар и все
+    // Если есть то показываем и открываем WebView
+    const data = await getAuthData();
+    setIsWebViewModal(true), setAuthData(data);
+    setVal(code);
+  }
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={{backgroundColor: '#fff'}}>
-        <View>
-          <Text>{item.id}</Text>
-          {item.image && (
-            <Image
-              source={{uri: imageUrl + `${item.banner}`}}
-              style={{
-                width: ITEM_WIDTH,
-                // height: ITEM_HEIGHT / 4,
-                margin: 0,
-                padding: 0,
-              }}
-            />
-          )}
-          <View style={styles.info}>
-            <Text style={styles.info_title}>{item.title}</Text>
-            {item.cost && (
-              <Text style={styles.info_cost}>
-                {item.cost + ' ' + globalConfig.RUB}
-              </Text>
-            )}
-            <Text style={styles.info_note}>{item.note}</Text>
+    <ScrollView
+      style={styles.container}
+      showsVerticalScrollIndicator={false}
+      style={{backgroundColor: '#fff'}}>
+      <View>
+        <Text>{item.id}</Text>
+        {item.image && (
+          <Image
+            source={{uri: imageUrl + `${item.banner}`}}
+            style={{
+              width: ITEM_WIDTH,
+              // height: ITEM_HEIGHT / 4,
+              margin: 0,
+              padding: 0,
+            }}
+          />
+        )}
+        <View style={styles.info}>
+          <Text style={styles.info_title}>{item.title}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text numberOfLines={1} style={styles.card_header_cost}>
+              {item.cost && item.cost}
+            </Text>
+            <FontAwesome5 name="ruble-sign" size={17} />
           </View>
-          <View style={styles.coordinate}>
+          <View style={{marginTop: 10}}>
             <TouchableOpacity
-              style={styles.coordinate_adress}
+              onPress={() => _handleWeb(item.code)}
+              style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View
+                style={[
+                  {backgroundColor: `${item.color}`},
+                  styles.card_body_metro_icon,
+                ]}
+              />
+              <Text style={styles.card_body_metro_title}>{item._metro}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.card_body_address}
               onPress={() => location(item.adress)}>
               <Icon
-                name="navigate-circle-outline"
-                size={26}
-                style={styles.coordinate_adress_icon}
+                name="location"
+                size={24}
+                style={styles.card_body_address_icon}
               />
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={styles.coordinate_adress_title}>
+                style={styles.card_body_address_title}>
                 {item.adress}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.coordinate_metro}>
-              <View
-                style={[
-                  styles.coordinate_metro_icon,
-                  {backgroundColor: `${item.color}`},
-                ]}>
-                <Text>{item.number}</Text>
-              </View>
-              <Text>{item._metro}</Text>
-            </TouchableOpacity>
           </View>
-          <View style={styles.card_footer}>
-            <TouchableOpacity style={styles.card_footer_info}>
-              <Image
-                style={styles.card_footer_info_avatar}
-                source={
-                  item.avatar ? {uri: imageUrl + '/' + item.avatar} : USER_LOGO
-                }
-              />
-              <Text style={styles.card_footer_info_name}>{item.name}</Text>
-            </TouchableOpacity>
-          </View>
+          {/* <Text numberOfLines={2} style={styles.card_body_metro_title}>
+            {moment(item.date).format('Do MMM HH:MM')}
+          </Text> */}
+
+          <Text style={styles.info_note}>{item.note}</Text>
         </View>
-        <View style={styles.conversation}>
+        {/* <View style={styles.coordinate}>
           <TouchableOpacity
-            onPress={() => telephone(item.phone)}
-            style={styles.conversation_phone}>
+            style={styles.coordinate_adress}
+            onPress={() => location(item.adress)}>
             <Icon
-              name="call-outline"
-              size={22}
-              style={{color: mlColors.white}}
+              name="navigate-circle-outline"
+              size={26}
+              style={styles.coordinate_adress_icon}
             />
-            <Text style={styles.conversation_phone_title}> Позвонить </Text>
+            <Text
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              style={styles.coordinate_adress_title}>
+              {item.adress}
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => whatsapp(item.phone)}
-            style={styles.conversation_whatsapp}>
-            <Icon
-              name="logo-whatsapp"
-              size={22}
-              style={{color: mlColors.white}}
-            />
-            <Text style={styles.conversation_whatsapp_title}> WhatsApp </Text>
+          <TouchableOpacity style={styles.coordinate_metro}>
+            <View
+              style={[
+                styles.coordinate_metro_icon,
+                {backgroundColor: `${item.color}`},
+              ]}>
+              <Text>{item.number}</Text>
+            </View>
+            <Text>{item._metro}</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => whatsapp(item.phone)}
-            style={styles.conversation_telegram}>
-            <Icon
-              name="navigate-outline"
-              size={22}
-              style={{color: mlColors.white}}
+        </View> */}
+        <View style={styles.card_footer}>
+          <TouchableOpacity style={styles.card_footer_info}>
+            <Image
+              style={styles.card_footer_info_avatar}
+              source={
+                item.avatar ? {uri: imageUrl + '/' + item.avatar} : USER_LOGO
+              }
             />
-            <Text style={styles.conversation_whatsapp_title}> Telegram </Text>
+            <Text style={styles.card_footer_info_name}>{item.name}</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+      <View style={styles.conversation}>
+        <TouchableOpacity
+          onPress={() => telephone(item.phone)}
+          style={styles.conversation_phone}>
+          <Icon name="call-outline" size={22} style={{color: mlColors.white}} />
+          <Text style={styles.conversation_phone_title}> Позвонить </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => whatsapp(item.phone)}
+          style={styles.conversation_whatsapp}>
+          <Icon
+            name="logo-whatsapp"
+            size={22}
+            style={{color: mlColors.white}}
+          />
+          <Text style={styles.conversation_whatsapp_title}> WhatsApp </Text>
+        </TouchableOpacity>
+        {/* <TouchableOpacity
+          onPress={() => whatsapp(item.phone)}
+          style={styles.conversation_telegram}>
+          <Icon
+            name="navigate-outline"
+            size={22}
+            style={{color: mlColors.white}}
+          />
+          <Text style={styles.conversation_whatsapp_title}> Telegram </Text>
+        </TouchableOpacity>  */}
+      </View>
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={isWebViewModal}
+        onRequestClose={isWebViewModal}
+        style={{flex: 1}}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Метро</Text>
+          <TouchableOpacity onPressOut={() => setIsWebViewModal(false)}>
+            <Icon name="close-outline" size={34} />
+          </TouchableOpacity>
+        </View>
+        <WebView
+          source={{
+            uri: `https://yandex.ru/metro/moscow?route_from_id=${
+              authData && authData.code
+            }&route_to_id=${val && val}`,
+          }}
+          originWhitelist={['*']}
+          // allowFileAccess={true}
+          // domStorageEnabled={true}
+          // allowUniversalAccessFromFileURLs={true}
+          // allowFileAccessFromFileURLs={true}
+          // mixedContentMode="always"
+          // onNavigationStateChange={onNavigationStateChange}
+          startInLoadingState
+          scalesPageToFit
+          javaScriptEnabled
+          style={{flex: 1, marginTop: 0}}
+        />
+      </Modal>
+    </ScrollView>
   );
 }
 
@@ -131,9 +207,79 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  header: {
+    padding: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: Platform.OS === 'android' ? 0 : 40,
+    justifyContent: 'space-between',
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    // fontFamily: 'Source Sans Pro',
+  },
+  card_header_cost: {
+    fontSize: 24,
+    fontFamily: 'SourceSansPro-Bold',
+    color: mlColors.dark,
+    paddingRight: 3,
+  },
+  card_body_metro: {
+    // paddingHorizontal: 10,
+    // paddingVertical: 2,
+    // borderRadius: 5,
+    justifyContent: 'flex-start',
+    // backgroundColor: '#fafcff',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+    // width: ITEM_WIDTH / 2,
+  },
+  card_body_metro_icon: {
+    padding: 3,
+    width: 8,
+    height: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 11,
+    marginLeft: 8,
+    borderRadius: 100,
+    opacity: 0.7,
+  },
+  card_body_metro_title: {
+    fontSize: 16,
+    fontFamily: 'SourceSansPro-Regular',
+  },
+  card_body_address: {
+    // paddingHorizontal: 10,
+    // paddingVertical: 2,
+    // borderRadius: 5,
+    justifyContent: 'flex-start',
+    // backgroundColor: '#fafcff',
+    // alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  card_body_address_icon: {
+    paddingTop: 5,
+    marginRight: 3,
+    alignItems: 'center',
+    color: '#e53935',
+    opacity: 0.7,
+  },
+  card_body_address_title: {
+    paddingTop: 4,
+    // flexShrink: 1,
+    width: ITEM_WIDTH,
+    fontSize: 16,
+    fontFamily: 'SourceSansPro-Regular',
+  },
   info: {padding: 10},
   info_title: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
+    fontFamily: 'SourceSansPro-Regular',
+
     fontSize: 18,
     marginBottom: 10,
   },
@@ -146,7 +292,11 @@ const styles = StyleSheet.create({
   },
 
   info_note: {
+    marginTop: 20,
     color: mlColors.dark,
+    lineHeight: 22,
+    fontSize: 16,
+    fontFamily: 'SourceSansPro-Regular',
   },
 
   coordinate: {padding: 10},
@@ -242,6 +392,8 @@ const styles = StyleSheet.create({
   },
   card_footer_info_name: {
     // color: mlColors.light_brown,
+    fontSize: 16,
+    fontFamily: 'SourceSansPro-SemiBold',
   },
   card_footer_like: {
     flexDirection: 'row',

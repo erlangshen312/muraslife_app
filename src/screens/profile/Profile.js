@@ -3,6 +3,7 @@ import React, {
   useLayoutEffect,
   useRef,
   useCallback,
+  useMemo,
   useEffect,
 } from 'react';
 import {
@@ -16,9 +17,16 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getAuthData, getToken, setAuthData} from '../../utils/asyncStorage';
 import ProfileAbout from './ProfileAbout';
-import PostLists from './post/PostLists';
+// import PostLists from './post/PostLists';
 import axios from 'axios';
-import {apiUrl, mlColors} from '../../configs/config';
+import {API, apiUrl, mlColors} from '../../configs/config';
+import PostsLists from '../../components/PostsLists';
+import defaultAvatar from '../../assets/images/user.png';
+import BottomSheet, {
+  BottomSheetScrollView,
+  BottomSheetFlatList,
+} from '@gorhom/bottom-sheet';
+import {SafeAreaView} from 'react-native';
 
 const wait = (timeout) => {
   return new Promise((resolve) => {
@@ -39,7 +47,7 @@ const Profile = ({navigation}) => {
           style={{marginLeft: 10, padding: 3}}
           onPress={() => navigation.navigate('Notification')}
           title="Notification">
-          <Icon name="notifications-outline" size={24} />
+          <Icon name="notifications-outline" size={26} />
         </TouchableOpacity>
       ),
       headerTitle: () => (
@@ -67,7 +75,7 @@ const Profile = ({navigation}) => {
           'x-auth-token': token,
         },
       };
-      const res = await axios.get(`${apiUrl}/api/auth`, config);
+      const res = await axios.get(`${API.apiv1}/api/auth`, config);
       setBioData(res.data);
       await setAuthData(res.data);
     } catch (error) {
@@ -90,7 +98,7 @@ const Profile = ({navigation}) => {
     const authData = await getAuthData();
     try {
       const res = await axios.get(
-        `${apiUrl}/api/users/mypost/${authData._id}`,
+        `${API.apiv1}/api/users/mypost/${authData._id}`,
         {
           headers: {
             'Content-Type': 'application/json',
@@ -105,12 +113,10 @@ const Profile = ({navigation}) => {
       console.warn('PostLists', er);
     }
   };
-
   useEffect(() => {
     checkProfileData();
     getUserPostsList();
   }, []);
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     checkProfileData();
@@ -119,6 +125,7 @@ const Profile = ({navigation}) => {
   }, []);
 
   return (
+    // <SafeAreaView>
     <ScrollView
       style={{backgroundColor: mlColors.white}}
       showsVerticalScrollIndicator={false}
@@ -142,13 +149,27 @@ const Profile = ({navigation}) => {
           </Text>
         </TouchableOpacity>
       </View>
-      {/* <PostsLists
-        type={'profile'}
-        posts={posts}
-        onRefresh={() => onRefresh()}
-        refreshing={refreshing}
-        scrollRef={scrollRef}
-      /> */}
+
+      <View style={{flexDirection: 'row'}}>
+        <Text
+          style={{
+            color: mlColors.dark,
+            fontWeight: 'bold',
+            fontSize: 14,
+            marginHorizontal: 10,
+            marginVertical: 10,
+          }}>
+          ДРУЗЬЯ
+        </Text>
+        <Text
+          style={{
+            color: mlColors.light_brown,
+            fontSize: 14,
+            marginVertical: 10,
+          }}>
+          {posts.length}
+        </Text>
+      </View>
       <View style={{flexDirection: 'row'}}>
         <Text
           style={{
@@ -169,8 +190,16 @@ const Profile = ({navigation}) => {
           {posts.length}
         </Text>
       </View>
-      {posts && <PostLists posts={posts} getUserPostsList={getUserPostsList} />}
+      <PostsLists
+        type={'profile'}
+        posts={posts}
+        onRefresh={() => onRefresh()}
+        refreshing={refreshing}
+        scrollRef={scrollRef}
+        getUserPostsList={getUserPostsList}
+      />
     </ScrollView>
+    // </SafeAreaView>
   );
 };
 
