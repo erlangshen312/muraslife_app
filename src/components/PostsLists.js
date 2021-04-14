@@ -276,12 +276,6 @@ export default function PostsLists({
             }&route_to_id=${val && val}`,
           }}
           originWhitelist={["*"]}
-          // allowFileAccess={true}
-          // domStorageEnabled={true}
-          // allowUniversalAccessFromFileURLs={true}
-          // allowFileAccessFromFileURLs={true}
-          // mixedContentMode="always"
-          // onNavigationStateChange={onNavigationStateChange}
           startInLoadingState
           scalesPageToFit
           javaScriptEnabled
