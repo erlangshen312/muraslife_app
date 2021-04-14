@@ -1,6 +1,6 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Auth from '../screens/auth/Auth';
 import Dashboard from '../screens/dashboard/Dashboard';
@@ -17,8 +17,8 @@ import Settings from '../screens/profile/settings/Settings';
 import Faq from '../screens/profile/settings/Faq';
 import AboutApp from '../screens/profile/settings/AboutApp';
 import Notification from '../screens/profile/notification/Notification';
-import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
-import {mlColors} from '../configs/config';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+import { mlColors } from '../configs/config';
 
 const AuthStack = createStackNavigator();
 export const AuthStackScreen = () => (
@@ -62,22 +62,22 @@ const ProfileStackScreen = () => (
     <ProfileStack.Screen
       name="Profile"
       component={Profile}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
       name="Create"
       component={PostCreate}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
       name="Update"
       component={PostUpdate}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
       name="PostLists"
       component={PostLists}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
       name="Details"
@@ -90,22 +90,22 @@ const ProfileStackScreen = () => (
     <ProfileStack.Screen
       name="Settings"
       component={Settings}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
       name="Faq"
       component={Faq}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
       name="App"
       component={AboutApp}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
       name="Notification"
       component={Notification}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
   </ProfileStack.Navigator>
 );
@@ -116,12 +116,12 @@ const NewsStackScreen = () => (
     <NewsStack.Screen
       name="News"
       component={News}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     <NewsStack.Screen
       name="Details"
       component={NewsDetails}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
   </NewsStack.Navigator>
 );
@@ -132,7 +132,7 @@ const ShopStackScreen = () => (
     <ShopStack.Screen
       name="Shop"
       component={Shop}
-      options={{animationEnabled: false}}
+      options={{ animationEnabled: false }}
     />
     {/* <ShopStack.Screen
       name="Details"
@@ -148,11 +148,15 @@ const ShopStackScreen = () => (
 );
 
 function getTabBarVisible(route) {
-  const routeName = getFocusedRouteNameFromRoute(route) || 'Dashboard';
-  if (routeName === 'Details') {
-    return false;
+  const routeName = getFocusedRouteNameFromRoute(route);
+  switch (routeName) {
+    case 'Details':
+      return false;
+    case 'Create':
+      return false;
+    default:
+      true;
   }
-  return true;
 }
 
 const TabStack = createBottomTabNavigator();
@@ -165,14 +169,17 @@ export const TabStackScreen = () => (
         backgroundColor: mlColors.white,
         paddingBottom: 5,
         paddingTop: 5,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
       },
-    }}>
+    }}
+  >
     <TabStack.Screen
       name="Dashboard"
       component={DashboardStackScreen}
-      options={({route}) => ({
+      options={({ route }) => ({
         tabBarLabel: 'Главная',
-        tabBarIcon: ({color, size}) => (
+        tabBarIcon: ({ color, size }) => (
           <Icon name="albums" color={color} size={size} />
         ),
         tabBarVisible: getTabBarVisible(route),
@@ -201,12 +208,13 @@ export const TabStackScreen = () => (
     <TabStack.Screen
       name="Profile"
       component={ProfileStackScreen}
-      options={{
+      options={({ route }) => ({
         tabBarLabel: 'Профиль',
-        tabBarIcon: ({color, size}) => (
+        tabBarIcon: ({ color, size }) => (
           <Icon name="person" color={color} size={size} />
         ),
-      }}
+        tabBarVisible: getTabBarVisible(route),
+      })}
     />
   </TabStack.Navigator>
 );

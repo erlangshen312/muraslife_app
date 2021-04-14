@@ -64,7 +64,7 @@ const Profile = ({navigation}) => {
         </TouchableOpacity>
       ),
     });
-  }, [navigation]);
+  }, [bioData, navigation]);
 
   const getNewProfileDataFromServer = async () => {
     const token = await getToken();
@@ -121,6 +121,7 @@ const Profile = ({navigation}) => {
     setRefreshing(true);
     checkProfileData();
     getUserPostsList();
+    getNewProfileDataFromServer();
     wait(2000).then(() => setRefreshing(false));
   }, []);
 
@@ -135,9 +136,7 @@ const Profile = ({navigation}) => {
       {bioData && <ProfileAbout bioData={bioData} />}
       <View style={styles.profile_count}>
         <TouchableOpacity
-          style={{
-            alignItems: 'center',
-          }}
+          style={{alignItems: 'center'}}
           onPress={() => navigation.navigate('Create', {getUserPostsList})}>
           <Icon
             style={{color: mlColors.dark_blue}}
@@ -150,7 +149,7 @@ const Profile = ({navigation}) => {
         </TouchableOpacity>
       </View>
 
-      <View style={{flexDirection: 'row'}}>
+      {/* <View style={{flexDirection: 'row'}}>
         <Text
           style={{
             color: mlColors.dark,
@@ -169,7 +168,7 @@ const Profile = ({navigation}) => {
           }}>
           {posts.length}
         </Text>
-      </View>
+      </View> */}
       <View style={{flexDirection: 'row'}}>
         <Text
           style={{

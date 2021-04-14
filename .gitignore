@@ -10,7 +10,7 @@ yarn-error.log
 .gitattrubuties
 node_modules/
 .env
-
+yarn.lock
 # Xcode
 #
 build/

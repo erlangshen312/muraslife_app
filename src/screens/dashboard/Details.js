@@ -38,7 +38,8 @@ export default function Details({route, navigation}) {
     // Если нету то показываем нотив или снекбар и все
     // Если есть то показываем и открываем WebView
     const data = await getAuthData();
-    setIsWebViewModal(true), setAuthData(data);
+    setIsWebViewModal(true);
+    setAuthData(data);
     setVal(code);
   }
   return (

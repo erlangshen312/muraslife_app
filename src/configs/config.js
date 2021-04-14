@@ -26,8 +26,9 @@ export const configs = {
 };
 
 export const API = {
-  apiv1: 'http://192.168.1.74:5000',
-  // apiv1: 'http://192.168.43.167:5000',
+  // apiv1: 'http://10.0.2.2:5000',
+  // apiv1: 'http://192.168.1.71:5000',
+  apiv1: 'http://192.168.43.167:5000',
   // apiv1: 'http://localhost:5000',
   // apiv1: 'https://muras.life',
 };
@@ -75,6 +76,8 @@ export const mlColors = {
   green: '#4CAF50',
   light_green: '#81C784',
   dark_green: '#2E7D32',
+
+  primary: '#0052CC',
 };
 
 export const appName = 'Muras Life';

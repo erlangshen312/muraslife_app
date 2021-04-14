@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   RefreshControl,
@@ -6,35 +6,23 @@ import {
   Text,
   TouchableOpacity,
   View,
-  Dimensions,
   Modal,
   Image,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {useNavigation} from '@react-navigation/native';
-import {ActionSheet} from 'react-native-cross-actionsheet';
-import {
-  apiUrl,
-  dimensionHeight,
-  globalConfig,
-  mlColors,
-  ITEM_WIDTH,
-  ITEM_HEIGHT,
-  API,
-} from '../configs/config';
-import {telephone, whatsapp} from './talk';
-import Banners from '../screens/dashboard/header/Banners';
-import {openActions} from './actions';
-import {metro, location} from './find';
+import { useNavigation } from '@react-navigation/native';
+import { ActionSheet } from 'react-native-cross-actionsheet';
+import { apiUrl, mlColors, API } from '../configs/config';
+import { telephone, whatsapp } from './talk';
 import USER_LOGO from '../assets/images/user.png';
-import autoprefixer from 'autoprefixer';
 import moment from 'moment';
 import 'moment/locale/ru';
 import momentDurationFormatSetup from 'moment-duration-format';
 // import {snack} from '../utils/snack';
-import {WebView} from 'react-native-webview';
-import {getAuthData} from '../utils/asyncStorage';
+import { WebView } from 'react-native-webview';
+import { getAuthData, getToken } from '../utils/asyncStorage';
 
 moment.locale('ru');
 
@@ -49,7 +37,7 @@ export default function PostsLists({
 }) {
   const navigation = useNavigation();
   const _handleOpenDetail = async (item, close) => {
-    navigation.navigate('Details', {item}),
+    navigation.navigate('Details', { item }),
       typeof close !== 'undefined' && close();
   };
   const [isWebViewModal, setIsWebViewModal] = useState(false);
@@ -80,9 +68,8 @@ export default function PostsLists({
     const ms = moment(currentDayTime, 'YYYY-MM-DDTHH:mm:ss').diff(
       moment(finishDayTime, 'YYYY-MM-DDTHH:mm:ss'),
     );
-    c              
     const isLeft = moment(currentDayTime).isBefore(finishDayTime);
-    return {hoursLeft, isLeft};
+    return { hoursLeft, isLeft };
   };
   const _handleUpdateTimer = (hoursLeft, isLeft, item) => {
     console.log(isLeft);
@@ -91,7 +78,7 @@ export default function PostsLists({
     // if (isLeft === false) return snack(`Допиши код и подправь бэкэнд!`);
   };
   const _handleOpenProfileActionSheet = (item) => {
-    const {hoursLeft, isLeft} = timeLeft(item);
+    const { hoursLeft, isLeft } = timeLeft(item);
     ActionSheet.options({
       options: [
         {
@@ -103,7 +90,7 @@ export default function PostsLists({
         {
           text: 'Изменить',
           onPress: () =>
-            navigation.navigate('Update', {item, getUserPostsList}),
+            navigation.navigate('Update', { item, getUserPostsList }),
         },
         {
           text: 'Удалить',
@@ -111,7 +98,7 @@ export default function PostsLists({
           onPress: () => _handleDeletePost(item._id),
         },
       ],
-      cancel: {text: 'Назад', onPress: () => console.log('cancel')},
+      cancel: { text: 'Назад', onPress: () => console.log('cancel') },
     });
 
     // ActionSheet.options({
@@ -145,7 +132,7 @@ export default function PostsLists({
           func: () => whatsapp(item.phone),
         },
       ],
-      cancel: {text: 'Назад', onPress: () => console.log('cancel')},
+      cancel: { text: 'Назад', onPress: () => console.log('cancel') },
     });
   };
 
@@ -185,7 +172,8 @@ export default function PostsLists({
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }>
+      }
+    >
       {/* {type === 'dashboard' && <Banners />} */}
       <View style={styles.container}>
         {posts &&
@@ -193,7 +181,8 @@ export default function PostsLists({
             <TouchableOpacity
               style={styles.card}
               key={item._id}
-              onPress={() => _handleOpenDetail(item, close)}>
+              onPress={() => _handleOpenDetail(item, close)}
+            >
               {/* <View
                 style={{
                   flex: 1, */}
@@ -212,7 +201,7 @@ export default function PostsLists({
                   // aspectRatio: 5 / 3,
                 }}
                 source={
-                  item.avatar ? {uri: apiUrl + '/' + item.avatar} : USER_LOGO
+                  item.avatar ? { uri: apiUrl + '/' + item.avatar } : USER_LOGO
                 }
               />
               {/* </View> */}
@@ -221,24 +210,25 @@ export default function PostsLists({
                   flex: 1,
                   paddingHorizontal: 10,
                   justifyContent: 'space-between',
-                }}>
+                }}
+              >
                 <Text numberOfLines={2} style={styles.card_header_title}>
                   {item.title}
                 </Text>
                 <View>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text numberOfLines={1} style={styles.card_header_cost}>
                       {item.cost && item.cost}
                     </Text>
                     <FontAwesome5 name="ruble-sign" size={14} />
                   </View>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={styles.card_body_metro_title}>
                       {item._metro}
                     </Text>
                     <View
                       style={[
-                        {backgroundColor: `${item.color}`},
+                        { backgroundColor: `${item.color}` },
                         styles.card_body_metro_icon,
                       ]}
                     />
@@ -255,7 +245,8 @@ export default function PostsLists({
                     // backgroundColor: 'red',
                     padding: 5,
                   }}
-                  onPress={() => _handleFavorite(item)}>
+                  onPress={() => _handleFavorite(item)}
+                >
                   {isFavorite === false ? (
                     <Icon name="heart-outline" size={22} />
                   ) : (
@@ -271,7 +262,8 @@ export default function PostsLists({
         transparent={false}
         visible={isWebViewModal}
         onRequestClose={isWebViewModal}
-        style={{flex: 1}}>
+        style={{ flex: 1 }}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>Метро</Text>
           <TouchableOpacity onPressOut={() => setIsWebViewModal(false)}>
@@ -294,7 +286,7 @@ export default function PostsLists({
           startInLoadingState
           scalesPageToFit
           javaScriptEnabled
-          style={{flex: 1, marginTop: 0}}
+          style={{ flex: 1, marginTop: 0 }}
         />
       </Modal>
     </ScrollView>
@@ -326,16 +318,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     borderRadius: 5,
-    backgroundColor: '#FFF',
+    backgroundColor: '#fff',
     margin: 2,
-    shadowColor: '#000',
+    shadowColor: '#fff',
     shadowOffset: {
       width: 0,
       height: 1,
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
-    elevation: 2,
+    elevation: 0.5,
   },
   card_header: {
     flex: 1,

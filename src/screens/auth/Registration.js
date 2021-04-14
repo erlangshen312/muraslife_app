@@ -67,6 +67,16 @@ const Registration = () => {
         <TextInput
           autoCapitalize="none"
           autoCorrect={false}
+          // keyboardType={'text'}
+          style={styles.text_input}
+          placeholder="nickname"
+          // placeholderTextColor="white"
+          value={name}
+          onChangeText={(text) => setUsername(text)}
+        />
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
           keyboardType={'email-address'}
           style={styles.text_input}
           placeholder="email@mail.com"
@@ -96,7 +106,7 @@ const Registration = () => {
           title="Login"
           style={styles.button}
           onPress={() => onLoginHandler()}>
-          <Text style={styles.text_button}>Registration</Text>
+          <Text style={styles.text_button}>ЗАРЕГИСТРИРОВАТЬСЯ</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -108,22 +118,26 @@ export default Registration;
 const styles = StyleSheet.create({
   text_input: {
     height: 55,
-    backgroundColor: 'rgba(236,239,241 ,1)',
+    backgroundColor: mlColors.white,
     marginBottom: 15,
     paddingLeft: 20,
-    borderRadius: 30,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#d0d0d0',
+    elevation: 2,
   },
   button: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: mlColors.white,
     height: 55,
     marginBottom: 20,
-    borderRadius: 30,
-    backgroundColor: mlColors.white,
+    borderRadius: 10,
+    elevation: 2,
   },
   text_button: {
-    color: mlColors.black,
-    fontWeight: '700',
+    color:'#0052CC',
+    fontWeight: "700",
   },
   error: {
     paddingTop: 10,

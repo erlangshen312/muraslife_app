@@ -6,26 +6,29 @@ import React, {
   useCallback,
   Fragment,
 } from 'react';
-import {SafeAreaView} from 'react-native';
+import { SafeAreaView } from 'react-native';
 import {
   StyleSheet,
   ActivityIndicator,
   View,
   Image,
   Text,
+  Platform,
   TouchableOpacity,
   Alert,
 } from 'react-native';
 import defaultAvatar from '../../assets/images/user.png';
-import {API, mlColors} from '../../configs/config';
+import { API, mlColors } from '../../configs/config';
 import ImageModal from '../../imageComponent/ImageModal';
 import ImagePicker from 'react-native-image-crop-picker';
-import {getToken} from '../../utils/asyncStorage';
+import { getToken, setAuthData } from '../../utils/asyncStorage';
 import axios from 'axios';
 import FFormData from 'form-data';
+import RNFetchBlob from 'rn-fetch-blob';
 
-export default function ProfileImage({bioData}) {
+export default function ProfileImage({ bioData }) {
   const [img, setImg] = useState();
+  const [ava, setAva] = useState();
 
   function pickSingle(cropit = true, circular = false, mediaType = 'photo') {
     console.log('PICK SINGLE IMAGE CLICKED INTO');
@@ -56,33 +59,54 @@ export default function ProfileImage({bioData}) {
   }
 
   const _handleUploadPhoto = async (image) => {
-    console.log(image.mime, image.filename);
     const token = await getToken();
-    const formData = new FormData();
-    formData.append('file', image[0]);
-    formData.append('user_id', bioData._id);
-    console.log('boundary:', formData._boundary);
-
-
-    try {
-      await axios(`${API.apiv1}/api/users/avatar`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-          'x-auth-token': token,
+    console.log(image);
+    RNFetchBlob.fetch(
+      'POST',
+      `${API.apiv1}/api/users/avatar`,
+      {
+        'x-auth-token': token,
+        'Content-Type': 'multipart/form-data',
+      },
+      [
+        {
+          name: 'file',
+          filename: 'avatar.jpg',
+          type: 'image/jpg',
+          data: RNFetchBlob.wrap(image.path),
         },
-        body: JSON.stringify(formData),
+        // elements without property `filename` will be sent as plain text
+      ],
+    )
+      .then((res) => {
+        const d = JSON.parse(res.data);
+        console.log('RESPONSE RN_FETCH_BLOB:', d.user.avatar);
+        setAva(d.user.avatar);
+        // setAuthData(d);
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          console.log(responseJson);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } catch (err) {
-      console.error(err);
-    }
+      .catch((err) => {
+        console.log(err);
+      });
+
+    // try {
+    //   await fetch(`${API.apiv1}/api/users/avatar`, {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+    //       'x-auth-token': token,
+    //     },
+    //     body: JSON.stringify(formData),
+    //   })
+    //     .then((response) => response.json())
+    //     .then((responseJson) => {
+    //       console.log(responseJson);
+    //     })
+    //     .catch((error) => {
+    //       console.error(error);
+    //     });
+    // } catch (err) {
+    //   console.error(err);
+    // }
   };
 
   return (
@@ -101,9 +125,16 @@ export default function ProfileImage({bioData}) {
           shadowRadius: 2.0,
           elevation: 1,
         }}
-        onPress={() => pickSingle()}>
+        onPress={() => pickSingle()}
+      >
         <Image
-          source={img ? img : defaultAvatar}
+          source={
+            bioData.avatar
+              ? {
+                  uri: `${API.apiv1}/${bioData.avatar}`,
+                }
+              : defaultAvatar
+          }
           PlaceholderContent={<ActivityIndicator />}
           style={{
             width: 90,

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,26 +8,28 @@ import {
   Alert,
   Dimensions,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import axios from 'axios';
-import {API, apiUrl, dimensionWidth, mlColors} from '../../../configs/config';
-import {getToken, getAuthData} from '../../../utils/asyncStorage';
-import CategoryListModal from './CategoryListModal';
+import { API, dimensionWidth, mlColors } from '../../../configs/config';
+import { getToken, getAuthData } from '../../../utils/asyncStorage';
 import MetroModal from '../../../components/MetroModal';
 import CategoryModal from '../../../components/CategoryModal';
+import ImagePicker from 'react-native-image-crop-picker';
+import RNFetchBlob from 'rn-fetch-blob';
+import defaultAvatar from '../../../assets/images/user.png';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function PostCreate({route, navigation}) {
+export default function PostCreate({ route, navigation }) {
   const [warning, setWarning] = useState('');
-
+  const [img, setImg] = useState();
+  const [imgPath, setImagePath] = useState();
   const [isMetro, setIsMetro] = useState(false);
   const [metroSelected, setMetroSelected] = useState();
-
   const [isCategory, setIsCategory] = useState(false);
   const [categorySelected, setCategorySelected] = useState();
-
-  const {getUserPostsList} = route.params;
-
-  const {width, height} = Dimensions.get('screen');
+  const { getUserPostsList } = route.params;
+  const { width, height } = Dimensions.get('screen');
   const ITEM_WIDTH = width;
   const ITEM_HEIGHT = height * 0.75;
 
@@ -47,13 +49,41 @@ export default function PostCreate({route, navigation}) {
     phone: '',
     banner: '',
   });
-  const {title, note, adress, cost, phone, banner} = form;
+  const { title, note, adress, cost, phone, banner } = form;
 
   const createPost = async () => {
     const token = await getToken();
     const authData = await getAuthData();
+    const image = await uploadPostImage(token);
+    // let path = '';
+    // RNFetchBlob.fetch(
+    //   'POST',
+    //   `${API.apiv1}/api/posts/image`,
+    //   {
+    //     'x-auth-token': token,
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    //   [
+    //     {
+    //       name: 'file',
+    //       filename: 'avatar.jpg',
+    //       type: 'image/jpg',
+    //       data: RNFetchBlob.wrap(img.path),
+    //     },
+    //     // elements without property `filename` will be sent as plain text
+    //   ],
+    // )
+    //   .then((res) => {
+    //     console.log('RESPONSE RN_FETCH_BLOB:', res.data);
+    //     // setAuthData(d);
+    //     setImagePath(res.data);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
 
-    let formData = {
+    console.log('IMAGE FROM PATH RETURNED: ', banner, image);
+    const formData = {
       user_id: authData._id,
       title: form.title,
       note: form.note,
@@ -62,45 +92,130 @@ export default function PostCreate({route, navigation}) {
       phone: form.phone,
       category: categorySelected.id,
       metro: metroSelected,
-      // banner: form.banner,
+      banner: image.path,
     };
-    console.log('CREATE ', formData);
+
+    console.warn(formData);
     const config = {
       headers: {
-        'Content-Type': 'application/json',
         'x-auth-token': token,
+        'Content-Type': 'multipart/form-data',
       },
     };
     try {
       const res = await axios.post(`${API.apiv1}/api/posts/`, formData, config);
       // await setAuthData(res.data);
-      if (res.status !== 200)
+      if (res.status !== 200) {
         return Alert.alert('Ошибка!', 'Проверьте соединение с интернетом.');
-      Alert.alert('Успешно!', 'Публикация на проверке.');
-      await goBack();
+      }
+      Alert.alert('Успешно!', 'Публикация поступит в сеть через 29 мин.');
+      // await goBack();
     } catch (error) {
       const er = error.response.data;
       console.error(er);
-      setWarning(er);
+      // setWarning(er);
     }
   };
-
   // const snapPoints = React.useMemo(() => ['10%','25%', '50%', '90%'], []);
-
   const infoMetro = (value) => {
     setMetroSelected(value);
   };
-
   const infoCategory = (value) => {
     setCategorySelected(value);
   };
 
+  function pickSingle(cropit = true, circular = false, mediaType = 'photo') {
+    console.log('PICK SINGLE IMAGE CLICKED INTO');
+    ImagePicker.openPicker({
+      width: 500,
+      height: 500,
+      // cropping: cropit,
+      // cropperCircleOverlay: circular,
+      sortOrder: 'none',
+      // mediaType: mediaType,
+      compressImageMaxWidth: 1000,
+      compressImageMaxHeight: 1000,
+      compressImageQuality: 1,
+      includeExif: true,
+      cropperStatusBarColor: 'white',
+      cropperToolbarColor: 'white',
+      cropperActiveWidgetColor: 'white',
+      cropperToolbarWidgetColor: '#3498DB',
+    })
+      .then((image) => {
+        setImg(image);
+      })
+      .catch((e) => {
+        console.error(e);
+        Alert.alert(e.message ? e.message : e);
+      });
+  }
+
+  async function uploadPostImage(token) {
+    console.info('token is here: ', token);
+    return await RNFetchBlob.fetch(
+      'POST',
+      `${API.apiv1}/api/posts/image/`,
+      {
+        'x-auth-token': token,
+        'Content-Type': 'multipart/form-data',
+      },
+      [
+        {
+          name: 'file',
+          filename: 'filename',
+          type: 'image/jpg',
+          data: RNFetchBlob.wrap(img.path),
+        },
+      ],
+    )
+      .then((res) => {
+        console.log('RESPONSE RN_FETCH_BLOB IN CREATE POSTS:', res.data);
+        return res.data;
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }
+  // cost dataIMGuri = 'file:///storage/emulated/0/Android/data/com.muras_app/files/Pictures/047abd3d-0a9c-40f1-8f60-4ce2de44ccde.jpg';
+
+  console.log(img);
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      style={styles.modalContainer}>
+      style={styles.modalContainer}
+    >
       <View>
         <View style={styles.input_container}>
+          <View>
+            <TouchableOpacity
+              style={{
+                height: 150,
+                width: 150,
+                backgroundColor: 'rgba(236,239,241 ,1)',
+                marginBottom: 15,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 10,
+              }}
+              onPress={() => {
+                pickSingle();
+              }}
+            >
+              {img ? (
+                <Image
+                  source={{ uri: img.path }}
+                  style={{
+                    width: 150,
+                    height: 150,
+                    borderRadius: 10,
+                  }}
+                />
+              ) : (
+                <Icon name="camera-outline" size={40} />
+              )}
+            </TouchableOpacity>
+          </View>
           <TextInput
             autoCapitalize="none"
             autoCorrect={false}
@@ -109,7 +224,7 @@ export default function PostCreate({route, navigation}) {
             placeholder="Enter the title"
             maxLength={45}
             value={title}
-            onChangeText={(text) => setForm({...form, title: text})}
+            onChangeText={(text) => setForm({ ...form, title: text })}
           />
           <TextInput
             autoCapitalize="none"
@@ -128,7 +243,7 @@ export default function PostCreate({route, navigation}) {
             placeholder="Enter the note"
             maxLength={1200}
             value={note}
-            onChangeText={(text) => setForm({...form, note: text})}
+            onChangeText={(text) => setForm({ ...form, note: text })}
           />
           <TextInput
             autoCapitalize="none"
@@ -138,18 +253,39 @@ export default function PostCreate({route, navigation}) {
             placeholder="Enter the cost"
             maxLength={12}
             value={cost}
-            onChangeText={(text) => setForm({...form, cost: text})}
+            onChangeText={(text) => setForm({ ...form, cost: text })}
           />
-          <TextInput
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType={'default'}
-            style={styles.text_input}
-            placeholder="Enter the adress"
-            maxLength={100}
-            value={adress}
-            onChangeText={(text) => setForm({...form, adress: text})}
-          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <TextInput
+              autoCapitalize="none"
+              autoCorrect={false}
+              keyboardType={'default'}
+              style={[styles.text_input, { minWidth: '83%' }]}
+              placeholder="Enter the adress"
+              maxLength={100}
+              value={adress}
+              onChangeText={(text) => setForm({ ...form, adress: text })}
+            />
+            <TouchableOpacity
+              style={[
+                { paddingHorizontal: 5, justifyContent: 'center' },
+                styles.text_input,
+                { backgroundColor: mlColors.light_blue },
+              ]}
+            >
+              <Icon
+                name="location-outline"
+                size={20}
+                style={{ color: mlColors.white }}
+              />
+            </TouchableOpacity>
+          </View>
           <TextInput
             autoCapitalize="none"
             autoCorrect={false}
@@ -158,49 +294,80 @@ export default function PostCreate({route, navigation}) {
             placeholder="+7XXXZZZOORR"
             maxLength={12}
             value={phone}
-            onChangeText={(text) => setForm({...form, phone: text})}
+            onChangeText={(text) => setForm({ ...form, phone: text })}
           />
           <TouchableOpacity
-            style={[styles.text_input, {flex: 1, justifyContent: 'center'}]}
-            onPress={() => setIsMetro(!isMetro)}>
+            style={[styles.text_input, { flex: 1, justifyContent: 'center' }]}
+            onPress={() => setIsMetro(!isMetro)}
+          >
             {metroSelected && metroSelected ? (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <View
                   style={[
-                    {backgroundColor: `${metroSelected.color}`},
+                    { backgroundColor: `${metroSelected.color}` },
                     styles.metro_icon,
-                  ]}>
+                  ]}
+                >
                   <Text>{metroSelected.number}</Text>
                 </View>
                 <Text
                   style={{
                     alignItems: 'center',
                     fontSize: 16,
-                    marginLeft: 10,
-                  }}>
+                    marginHorizontal: 10,
+                  }}
+                >
                   {metroSelected.name}
                 </Text>
               </View>
             ) : (
-              <Text>Выберите метро</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text>Выберите метро</Text>
+                <Icon
+                  name="arrow-forward-outline"
+                  size={20}
+                  style={{ color: mlColors.light_blue }}
+                />
+              </View>
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.text_input, {flex: 1, justifyContent: 'center'}]}
-            onPress={() => setIsCategory(!isCategory)}>
+            style={[styles.text_input, { flex: 1, justifyContent: 'center' }]}
+            onPress={() => setIsCategory(!isCategory)}
+          >
             {categorySelected && categorySelected ? (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text
                   style={{
                     alignItems: 'center',
                     fontSize: 16,
                     marginLeft: 10,
-                  }}>
+                  }}
+                >
                   {categorySelected.title}
                 </Text>
               </View>
             ) : (
-              <Text>Выберите категорию</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Text>Выберите категорию</Text>
+                <Icon
+                  name="arrow-forward-outline"
+                  size={20}
+                  style={{ color: mlColors.light_blue }}
+                />
+              </View>
             )}
           </TouchableOpacity>
         </View>
@@ -208,13 +375,40 @@ export default function PostCreate({route, navigation}) {
         <View style={styles.button_container}>
           <TouchableOpacity
             style={[styles.save_button]}
-            onPress={() => createPost()}>
-            <Text style={styles.save_text_button}>Публиковать</Text>
+            onPress={() => createPost()}
+          >
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}
+            >
+              <Icon
+                name="megaphone-outline"
+                size={20}
+                style={{ color: mlColors.white, paddingHorizontal: 5 }}
+              />
+              <Text style={styles.save_text_button}> Публиковать</Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.exit_button]}
-            onPress={() => goBack()}>
-            <Text style={styles.exit_text_button}>Назад</Text>
+            onPress={() => goBack()}
+          >
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}
+            >
+              <Icon
+                name="close-circle-outline"
+                size={20}
+                style={{ color: mlColors.light_brown, paddingHorizontal: 5 }}
+              />
+              <Text style={styles.exit_text_button}>Отмена</Text>
+            </View>
           </TouchableOpacity>
           {/* {warning.length > 0 ? (
               <Text style={styles.error}>{warning}</Text>
@@ -260,13 +454,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   button_container: {
-    paddingTop: 10,
+    paddingVertical: 10,
   },
   text_input: {
     height: 55,
     backgroundColor: 'rgba(236,239,241 ,1)',
     marginBottom: 15,
-    paddingLeft: 20,
+    paddingHorizontal: 20,
     borderRadius: 10,
   },
   save_button: {
@@ -275,10 +469,10 @@ const styles = StyleSheet.create({
     backgroundColor: mlColors.light_green,
     height: 55,
     marginBottom: 20,
-    borderRadius: 30,
+    borderRadius: 10,
   },
   save_text_button: {
-    color: mlColors.black,
+    color: mlColors.white,
     fontWeight: '700',
   },
   exit_button: {
@@ -290,7 +484,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
   },
   exit_text_button: {
-    color: mlColors.brown,
+    color: mlColors.light_brown,
     fontWeight: '700',
   },
   error: {

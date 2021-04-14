@@ -1,7 +1,7 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {View, ScrollView, SafeAreaView} from 'react-native';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { View, ScrollView, SafeAreaView } from 'react-native';
 import axios from 'axios';
-import {API} from '../../configs/config';
+import { API } from '../../configs/config';
 
 import Search from './header/Search';
 import Category from './header/Category';
@@ -13,7 +13,7 @@ const wait = (timeout) => {
   });
 };
 
-const Dashboard = ({navigation}) => {
+const Dashboard = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const scrollRef = useRef();
@@ -21,7 +21,7 @@ const Dashboard = ({navigation}) => {
   const getAllPostLists = async () => {
     try {
       const res = await axios.get(`${API.apiv1}/api/posts`, {
-        headers: {'Content-Type': 'application/json'},
+        headers: { 'Content-Type': 'application/json' },
       });
       res.data !== null && setPosts(res.data);
     } catch (err) {
@@ -49,7 +49,7 @@ const Dashboard = ({navigation}) => {
     //   marginTop: Platform.OS === 'android' ? 0 : 40,
     // }}
     >
-      <View style={{padding: 10}}>
+      <View style={{ padding: 10 }}>
         <Search />
       </View>
       <Category />

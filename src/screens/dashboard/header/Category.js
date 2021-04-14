@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   category_text: {
-    color: mlColors.blue,
+    color: mlColors.primary,
     fontSize: 17,
     // fontWeight: '600',
     fontFamily: 'SourceSansPro-SemiBold',
