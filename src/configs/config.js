@@ -27,8 +27,8 @@ export const configs = {
 
 export const API = {
   // apiv1: 'http://10.0.2.2:5000',
-  // apiv1: 'http://192.168.1.71:5000',
-  apiv1: 'http://192.168.43.167:5000',
+  apiv1: 'http://192.168.1.67:5000',
+  // apiv1: 'http://192.168.43.167:5000',
   // apiv1: 'http://localhost:5000',
   // apiv1: 'https://muras.life',
 };

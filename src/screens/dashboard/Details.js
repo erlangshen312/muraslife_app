@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,22 +17,25 @@ import {
   ITEM_WIDTH,
   ITEM_HEIGHT,
   globalConfig,
+  API,
 } from '../../configs/config';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {phoneCall, whatsapp} from '../../components/talk';
-import {metro, location} from '../../components/find';
+import { phoneCall, whatsapp } from '../../components/talk';
+import { metro, location } from '../../components/find';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import moment from 'moment';
 import 'moment/locale/ru';
-moment.locale('ru');
-import {WebView} from 'react-native-webview';
-import {getAuthData} from '../../utils/asyncStorage';
 
-export default function Details({route, navigation}) {
-  const {item} = route.params;
+moment.locale('ru');
+import { WebView } from 'react-native-webview';
+import { getAuthData } from '../../utils/asyncStorage';
+
+export default function Details({ route, navigation }) {
+  const { item } = route.params;
   const [isWebViewModal, setIsWebViewModal] = useState(false);
   const [val, setVal] = useState();
   const [authData, setAuthData] = useState();
+
   async function _handleWeb(code) {
     // Сделать проверку на то что юзер указал метро или нет.
     // Если нету то показываем нотив или снекбар и все
@@ -42,16 +45,18 @@ export default function Details({route, navigation}) {
     setAuthData(data);
     setVal(code);
   }
+
   return (
     <ScrollView
       style={styles.container}
       showsVerticalScrollIndicator={false}
-      style={{backgroundColor: '#fff'}}>
+      style={{ backgroundColor: '#fff' }}
+    >
       <View>
         <Text>{item.id}</Text>
-        {item.image && (
+        {item.banner && (
           <Image
-            source={{uri: imageUrl + `${item.banner}`}}
+            source={{ uri: `${API.apiv1}/${item.banner}` }}
             style={{
               width: ITEM_WIDTH,
               // height: ITEM_HEIGHT / 4,
@@ -62,19 +67,20 @@ export default function Details({route, navigation}) {
         )}
         <View style={styles.info}>
           <Text style={styles.info_title}>{item.title}</Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text numberOfLines={1} style={styles.card_header_cost}>
               {item.cost && item.cost}
             </Text>
             <FontAwesome5 name="ruble-sign" size={17} />
           </View>
-          <View style={{marginTop: 10}}>
+          <View style={{ marginTop: 10 }}>
             <TouchableOpacity
               onPress={() => _handleWeb(item.code)}
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}
+            >
               <View
                 style={[
-                  {backgroundColor: `${item.color}`},
+                  { backgroundColor: `${item.color}` },
                   styles.card_body_metro_icon,
                 ]}
               />
@@ -82,7 +88,8 @@ export default function Details({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.card_body_address}
-              onPress={() => location(item.adress)}>
+              onPress={() => location(item.adress)}
+            >
               <Icon
                 name="location"
                 size={24}
@@ -91,7 +98,8 @@ export default function Details({route, navigation}) {
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={styles.card_body_address_title}>
+                style={styles.card_body_address_title}
+              >
                 {item.adress}
               </Text>
             </TouchableOpacity>
@@ -134,7 +142,7 @@ export default function Details({route, navigation}) {
             <Image
               style={styles.card_footer_info_avatar}
               source={
-                item.avatar ? {uri: imageUrl + '/' + item.avatar} : USER_LOGO
+                item.avatar ? { uri: imageUrl + '/' + item.avatar } : USER_LOGO
               }
             />
             <Text style={styles.card_footer_info_name}>{item.name}</Text>
@@ -144,17 +152,23 @@ export default function Details({route, navigation}) {
       <View style={styles.conversation}>
         <TouchableOpacity
           onPress={() => telephone(item.phone)}
-          style={styles.conversation_phone}>
-          <Icon name="call-outline" size={22} style={{color: mlColors.white}} />
+          style={styles.conversation_phone}
+        >
+          <Icon
+            name="call-outline"
+            size={22}
+            style={{ color: mlColors.white }}
+          />
           <Text style={styles.conversation_phone_title}> Позвонить </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => whatsapp(item.phone)}
-          style={styles.conversation_whatsapp}>
+          style={styles.conversation_whatsapp}
+        >
           <Icon
             name="logo-whatsapp"
             size={22}
-            style={{color: mlColors.white}}
+            style={{ color: mlColors.white }}
           />
           <Text style={styles.conversation_whatsapp_title}> WhatsApp </Text>
         </TouchableOpacity>
@@ -174,7 +188,8 @@ export default function Details({route, navigation}) {
         transparent={false}
         visible={isWebViewModal}
         onRequestClose={isWebViewModal}
-        style={{flex: 1}}>
+        style={{ flex: 1 }}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>Метро</Text>
           <TouchableOpacity onPressOut={() => setIsWebViewModal(false)}>
@@ -197,7 +212,7 @@ export default function Details({route, navigation}) {
           startInLoadingState
           scalesPageToFit
           javaScriptEnabled
-          style={{flex: 1, marginTop: 0}}
+          style={{ flex: 1, marginTop: 0 }}
         />
       </Modal>
     </ScrollView>
@@ -276,7 +291,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'SourceSansPro-Regular',
   },
-  info: {padding: 10},
+  info: { padding: 10 },
   info_title: {
     // fontWeight: 'bold',
     fontFamily: 'SourceSansPro-Regular',
@@ -300,7 +315,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SourceSansPro-Regular',
   },
 
-  coordinate: {padding: 10},
+  coordinate: { padding: 10 },
   coordinate_adress: {
     flex: 1,
     flexDirection: 'row',

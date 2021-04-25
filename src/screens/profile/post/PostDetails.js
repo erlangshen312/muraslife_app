@@ -1,4 +1,4 @@
-import React, {useLayoutEffect, useState, useEffect} from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   Modal,
+  Platform,
 } from 'react-native';
 import {
   imageUrl,
@@ -21,21 +22,23 @@ import {
   API,
 } from '../../../configs/config';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {phoneCall, whatsapp} from '../../../components/talk';
-import {metro, location} from '../../../components/find';
+import { phoneCall, whatsapp } from '../../../components/talk';
+import { metro, location } from '../../../components/find';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {getAuthData, getToken} from '../../../utils/asyncStorage';
+import { getAuthData, getToken } from '../../../utils/asyncStorage';
 import axios from 'axios';
 import moment from 'moment';
 import 'moment/locale/ru';
-moment.locale('ru');
-import {WebView} from 'react-native-webview';
 
-export default function PostDetails({route, navigation}) {
-  const {item} = route.params;
+moment.locale('ru');
+import { WebView } from 'react-native-webview';
+
+export default function PostDetails({ route, navigation }) {
+  const { item } = route.params;
   const [isWebViewModal, setIsWebViewModal] = useState(false);
   const [val, setVal] = useState();
   const [authData, setAuthData] = useState();
+
   async function _handleWeb(code) {
     // Сделать проверку на то что юзер указал метро или нет.
     // Если нету то показываем нотив или снекбар и все
@@ -44,13 +47,15 @@ export default function PostDetails({route, navigation}) {
     setIsWebViewModal(true), setAuthData(data);
     setVal(code);
   }
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          style={{marginRight: 10, padding: 3}}
+          style={{ marginRight: 10, padding: 3 }}
           onPress={() => _handleDeletePost(item)}
-          title="Выйти">
+          title="Выйти"
+        >
           <Icon name="trash-outline" size={24} />
         </TouchableOpacity>
       ),
@@ -77,18 +82,17 @@ export default function PostDetails({route, navigation}) {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      style={{backgroundColor: '#fff'}}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View>
         <Text>{item.id}</Text>
-        {item.image && (
+        {item.banner && (
           <Image
-            source={{uri: imageUrl + `${item.banner}`}}
+            source={
+              item.banner ? { uri: `${API.apiv1}/${item.banner}` } : USER_LOGO
+            }
             style={{
               width: ITEM_WIDTH,
-              // height: ITEM_HEIGHT / 4,
+              height: ITEM_HEIGHT / 2,
               margin: 0,
               padding: 0,
             }}
@@ -96,19 +100,20 @@ export default function PostDetails({route, navigation}) {
         )}
         <View style={styles.info}>
           <Text style={styles.info_title}>{item.title}</Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text numberOfLines={1} style={styles.card_header_cost}>
               {item.cost && item.cost}
             </Text>
             <FontAwesome5 name="ruble-sign" size={17} />
           </View>
-          <View style={{marginTop: 10}}>
+          <View style={{ marginTop: 10 }}>
             <TouchableOpacity
               onPress={() => _handleWeb(item.code)}
-              style={{flexDirection: 'row', alignItems: 'center'}}>
+              style={{ flexDirection: 'row', alignItems: 'center' }}
+            >
               <View
                 style={[
-                  {backgroundColor: `${item.color}`},
+                  { backgroundColor: `${item.color}` },
                   styles.card_body_metro_icon,
                 ]}
               />
@@ -116,7 +121,8 @@ export default function PostDetails({route, navigation}) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.card_body_address}
-              onPress={() => location(item.adress)}>
+              onPress={() => location(item.adress)}
+            >
               <Icon
                 name="location"
                 size={24}
@@ -125,7 +131,8 @@ export default function PostDetails({route, navigation}) {
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
-                style={styles.card_body_address_title}>
+                style={styles.card_body_address_title}
+              >
                 {item.adress}
               </Text>
             </TouchableOpacity>
@@ -168,7 +175,7 @@ export default function PostDetails({route, navigation}) {
             <Image
               style={styles.card_footer_info_avatar}
               source={
-                item.avatar ? {uri: imageUrl + '/' + item.avatar} : USER_LOGO
+                item.avatar ? { uri: `${API.apiv1}/${item.avatar}` } : USER_LOGO
               }
             />
             <Text style={styles.card_footer_info_name}>{item.name}</Text>
@@ -178,17 +185,23 @@ export default function PostDetails({route, navigation}) {
       <View style={styles.conversation}>
         <TouchableOpacity
           onPress={() => telephone(item.phone)}
-          style={styles.conversation_phone}>
-          <Icon name="call-outline" size={22} style={{color: mlColors.white}} />
+          style={styles.conversation_phone}
+        >
+          <Icon
+            name="call-outline"
+            size={22}
+            style={{ color: mlColors.white }}
+          />
           <Text style={styles.conversation_phone_title}> Позвонить </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => whatsapp(item.phone)}
-          style={styles.conversation_whatsapp}>
+          style={styles.conversation_whatsapp}
+        >
           <Icon
             name="logo-whatsapp"
             size={22}
-            style={{color: mlColors.white}}
+            style={{ color: mlColors.white }}
           />
           <Text style={styles.conversation_whatsapp_title}> WhatsApp </Text>
         </TouchableOpacity>
@@ -208,7 +221,8 @@ export default function PostDetails({route, navigation}) {
         transparent={false}
         visible={isWebViewModal}
         onRequestClose={isWebViewModal}
-        style={{flex: 1}}>
+        style={{ flex: 1 }}
+      >
         <View style={styles.header}>
           <Text style={styles.title}>Метро</Text>
           <TouchableOpacity onPressOut={() => setIsWebViewModal(false)}>
@@ -231,7 +245,7 @@ export default function PostDetails({route, navigation}) {
           startInLoadingState
           scalesPageToFit
           javaScriptEnabled
-          style={{flex: 1, marginTop: 0}}
+          style={{ flex: 1, marginTop: 0 }}
         />
       </Modal>
     </ScrollView>
@@ -241,6 +255,7 @@ export default function PostDetails({route, navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     padding: 10,
@@ -310,7 +325,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'SourceSansPro-Regular',
   },
-  info: {padding: 10},
+  info: { padding: 10 },
   info_title: {
     // fontWeight: 'bold',
     fontFamily: 'SourceSansPro-Regular',
@@ -334,7 +349,7 @@ const styles = StyleSheet.create({
     fontFamily: 'SourceSansPro-Regular',
   },
 
-  coordinate: {padding: 10},
+  coordinate: { padding: 10 },
   coordinate_adress: {
     flex: 1,
     flexDirection: 'row',

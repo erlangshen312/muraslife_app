@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   ScrollView,
   RefreshControl,
@@ -9,42 +9,43 @@ import {
   Modal,
   Image,
   Platform,
-} from "react-native";
-import Icon from "react-native-vector-icons/Ionicons";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { useNavigation } from "@react-navigation/native";
-import { ActionSheet } from "react-native-cross-actionsheet";
-import { apiUrl, mlColors, API } from "../configs/config";
-import { telephone, whatsapp } from "./talk";
-import USER_LOGO from "../assets/images/user.png";
-import moment from "moment";
-import "moment/locale/ru";
-import momentDurationFormatSetup from "moment-duration-format";
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
+import { ActionSheet } from 'react-native-cross-actionsheet';
+import { apiUrl, mlColors, API } from '../configs/config';
+import { telephone, whatsapp } from './talk';
+import USER_LOGO from '../assets/images/user.png';
+import moment from 'moment';
+import 'moment/locale/ru';
+import momentDurationFormatSetup from 'moment-duration-format';
 // import {snack} from '../utils/snack';
-import { WebView } from "react-native-webview";
-import { getAuthData, getToken } from "../utils/asyncStorage";
+import { WebView } from 'react-native-webview';
+import { getAuthData, getToken } from '../utils/asyncStorage';
+import axios from "axios";
 
-moment.locale("ru");
+moment.locale('ru');
 
 export default function PostsLists({
-                                     type,
-                                     close,
-                                     posts,
-                                     onRefresh,
-                                     refreshing,
-                                     scrollRef,
-                                     getUserPostsList,
-                                   }) {
+  type,
+  close,
+  posts,
+  onRefresh,
+  refreshing,
+  scrollRef,
+  getUserPostsList,
+}) {
   const navigation = useNavigation();
   const _handleOpenDetail = async (item, close) => {
-    navigation.navigate("Details", { item }),
-    typeof close !== "undefined" && close();
+    navigation.navigate('Details', { item }),
+      typeof close !== 'undefined' && close();
   };
   const [isWebViewModal, setIsWebViewModal] = useState(false);
   const [val, setVal] = useState();
   const [authData, setAuthData] = useState();
   const onNavigationStateChange = (navState) => {
-    if (navState.url.indexOf("https://www.google.com") === 0) {
+    if (navState.url.indexOf('https://www.google.com') === 0) {
       const regex = /#access_token=(.+)/;
       let accessToken = navState.url.match(regex)[1];
       console.log(accessToken);
@@ -63,10 +64,10 @@ export default function PostsLists({
   }
 
   const timeLeft = (item) => {
-    const currentDayTime = moment().format("YYYY-MM-DDTHH:mm:ss");
-    const finishDayTime = moment(item.timer).format("YYYY-MM-DDTHH:mm:ss");
-    const ms = moment(currentDayTime, "YYYY-MM-DDTHH:mm:ss").diff(
-      moment(finishDayTime, "YYYY-MM-DDTHH:mm:ss"),
+    const currentDayTime = moment().format('YYYY-MM-DDTHH:mm:ss');
+    const finishDayTime = moment(item.timer).format('YYYY-MM-DDTHH:mm:ss');
+    const ms = moment(currentDayTime, 'YYYY-MM-DDTHH:mm:ss').diff(
+      moment(finishDayTime, 'YYYY-MM-DDTHH:mm:ss'),
     );
     const isLeft = moment(currentDayTime).isBefore(finishDayTime);
     return { hoursLeft, isLeft };
@@ -82,23 +83,23 @@ export default function PostsLists({
     ActionSheet.options({
       options: [
         {
-          text: "Поднять",
+          text: 'Поднять',
           onPress: () => {
             _handleUpdateTimer(hoursLeft, isLeft, item);
           },
         },
         {
-          text: "Изменить",
+          text: 'Изменить',
           onPress: () =>
-            navigation.navigate("Update", { item, getUserPostsList }),
+            navigation.navigate('Update', { item, getUserPostsList }),
         },
         {
-          text: "Удалить",
+          text: 'Удалить',
           destructive: true,
           onPress: () => _handleDeletePost(item._id),
         },
       ],
-      cancel: { text: "Назад", onPress: () => console.log("cancel") },
+      cancel: { text: 'Назад', onPress: () => console.log('cancel') },
     });
 
     // ActionSheet.options({
@@ -122,17 +123,17 @@ export default function PostsLists({
     ActionSheet.options({
       options: [
         {
-          type: "item",
-          title: "Позвонить по телефону",
+          type: 'item',
+          title: 'Позвонить по телефону',
           func: () => telephone(item.phone),
         },
         {
-          type: "item",
-          title: "Написать по WhatsApp",
+          type: 'item',
+          title: 'Написать по WhatsApp',
           func: () => whatsapp(item.phone),
         },
       ],
-      cancel: { text: "Назад", onPress: () => console.log("cancel") },
+      cancel: { text: 'Назад', onPress: () => console.log('cancel') },
     });
   };
 
@@ -145,8 +146,8 @@ export default function PostsLists({
     try {
       const config = {
         headers: {
-          "Content-Type": "application/json",
-          "x-auth-token": token,
+          'Content-Type': 'application/json',
+          'x-auth-token': token,
         },
       };
       const res = await axios.delete(
@@ -165,6 +166,7 @@ export default function PostsLists({
     setIsFavorite(!isFavorite);
   };
 
+  console.warn(posts);
   return (
     <ScrollView
       style={styles.scroll}
@@ -177,84 +179,92 @@ export default function PostsLists({
       {/* {type === 'dashboard' && <Banners />} */}
       <View style={styles.container}>
         {posts &&
-        posts.map((item) => (
-          <TouchableOpacity
-            style={styles.card}
-            key={item._id}
-            onPress={() => _handleOpenDetail(item, close)}
-          >
-            {/* <View
+          posts.map((item) => (
+            <TouchableOpacity
+              style={styles.card}
+              key={item._id}
+              onPress={() => _handleOpenDetail(item, close)}
+            >
+              {/* <View
                 style={{
                   flex: 1, */}
-            {/* // justifyContent: 'flex-start', // backgroundColor: '#e5e5e5', // */}
-            {/* }}> */}
-            {/* onLongPress=
+              {/* // justifyContent: 'flex-start', // backgroundColor: '#e5e5e5', // */}
+              {/* }}> */}
+              {/* onLongPress=
                 {type === 'Profile'
                   ? () => _handleOpenProfileActionSheet(item)
                   : _handleOpenDashboardActionSheet(item)} */}
-            <Image
-              style={{
-                borderRadius: 5,
-                width: 135,
-                height: 100,
-                // alignSelf: 'center',
-                // aspectRatio: 5 / 3,
-              }}
-              source={
-                item.avatar ? { uri: apiUrl + "/" + item.avatar } : USER_LOGO
-              }
-            />
-            {/* </View> */}
-            <View
-              style={{
-                flex: 1,
-                paddingHorizontal: 10,
-                justifyContent: "space-between",
-              }}
-            >
-              <Text numberOfLines={2} style={styles.card_header_title}>
-                {item.title}
-              </Text>
-              <View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text numberOfLines={1} style={styles.card_header_cost}>
-                    {item.cost && item.cost}
-                  </Text>
-                  <FontAwesome5 name="ruble-sign" size={14} />
-                </View>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={styles.card_body_metro_title}>
-                    {item._metro}
-                  </Text>
-                  <View
-                    style={[
-                      { backgroundColor: `${item.color}` },
-                      styles.card_body_metro_icon,
-                    ]}
-                  />
-                </View>
-                <Text numberOfLines={2} style={styles.card_body_metro_title}>
-                  {moment(item.date).format("Do MMM HH:MM")}
-                </Text>
-              </View>
-              <TouchableOpacity
+              <Image
                 style={{
-                  position: "absolute",
-                  bottom: -5,
-                  right: -5,
-                  padding: 5,
+                  borderRadius: 5,
+                  width: 135,
+                  height: 100,
+                  // alignSelf: 'center',
+                  // aspectRatio: 5 / 3,
                 }}
-                onPress={() => _handleFavorite(item)}
+                source={{
+                  uri: `${API.apiv1}/${item.banner}`,
+                }}
+              />
+              {/* </View> */}
+              <View
+                style={{
+                  flex: 1,
+                  paddingHorizontal: 10,
+                  justifyContent: 'space-between',
+                }}
               >
-                {isFavorite === false ? (
-                  <Icon name="heart-outline" size={22} style={{ color: mlColors.brown }} />
-                ) : (
-                  <Icon name="heart" size={22} style={{ color: mlColors.light_red }} />
-                )}
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        ))}
+                <Text numberOfLines={2} style={styles.card_header_title}>
+                  {item.title}
+                </Text>
+                <View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text numberOfLines={1} style={styles.card_header_cost}>
+                      {item.cost && item.cost}
+                    </Text>
+                    <FontAwesome5 name="ruble-sign" size={14} />
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <Text style={styles.card_body_metro_title}>
+                      {item._metro}
+                    </Text>
+                    <View
+                      style={[
+                        { backgroundColor: `${item.color}` },
+                        styles.card_body_metro_icon,
+                      ]}
+                    />
+                  </View>
+                  <Text numberOfLines={2} style={styles.card_body_metro_title}>
+                    {moment(item.date).format('Do MMM HH:MM')}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    bottom: -5,
+                    right: -5,
+                    padding: 5,
+                  }}
+                  onPress={() => _handleFavorite(item)}
+                >
+                  {isFavorite === false ? (
+                    <Icon
+                      name="heart-outline"
+                      size={22}
+                      style={{ color: mlColors.brown }}
+                    />
+                  ) : (
+                    <Icon
+                      name="heart"
+                      size={22}
+                      style={{ color: mlColors.light_red }}
+                    />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          ))}
       </View>
       <Modal
         animationType="fade"
@@ -275,7 +285,7 @@ export default function PostsLists({
               authData && authData.code
             }&route_to_id=${val && val}`,
           }}
-          originWhitelist={["*"]}
+          originWhitelist={['*']}
           startInLoadingState
           scalesPageToFit
           javaScriptEnabled
@@ -295,25 +305,25 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 10,
-    alignItems: "center",
-    flexDirection: "row",
-    marginTop: Platform.OS === "android" ? 0 : 40,
-    justifyContent: "space-between",
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: Platform.OS === 'android' ? 0 : 40,
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 30,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     // fontFamily: 'Source Sans Pro',
   },
   card: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 10,
     padding: 10,
     borderRadius: 5,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     margin: 2,
-    shadowColor: "#fff",
+    shadowColor: '#fff',
     shadowOffset: {
       width: 0,
       height: 1,
@@ -324,17 +334,17 @@ const styles = StyleSheet.create({
   },
   card_header: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   card_header_title: {
-    fontFamily: "SourceSansPro-Regular",
+    fontFamily: 'SourceSansPro-Regular',
     fontSize: 17,
     flexShrink: 1,
   },
   card_header_cost: {
     fontSize: 18,
-    fontFamily: "SourceSansPro-Bold",
+    fontFamily: 'SourceSansPro-Bold',
     color: mlColors.dark,
     paddingRight: 3,
   },
@@ -342,7 +352,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   card_body_note: {
-    fontFamily: "SourceSansPro-Regular",
+    fontFamily: 'SourceSansPro-Regular',
     marginTop: 5,
     marginBottom: 10,
     color: mlColors.note,
@@ -353,58 +363,58 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 10,
     // paddingVertical: 2,
     // borderRadius: 5,
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     // backgroundColor: '#fafcff',
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    alignItems: "center",
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
     // width: ITEM_WIDTH / 2,
   },
   card_body_metro_icon: {
     padding: 3,
     width: 8,
     height: 8,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     marginLeft: 5,
     borderRadius: 100,
     opacity: 0.7,
   },
   card_body_metro_title: {
-    fontFamily: "SourceSansPro-Regular",
+    fontFamily: 'SourceSansPro-Regular',
   },
   card_body_address: {
     // paddingHorizontal: 10,
     // paddingVertical: 2,
     // borderRadius: 5,
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     // backgroundColor: '#fafcff',
-    alignSelf: "flex-start",
-    flexDirection: "row",
-    alignItems: "center",
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   card_body_address_icon: {
     paddingTop: 5,
     marginRight: 3,
-    alignItems: "center",
-    color: "#e53935",
+    alignItems: 'center',
+    color: '#e53935',
     opacity: 0.7,
   },
   card_body_address_title: {
     paddingTop: 4,
     flexShrink: 1,
-    fontFamily: "SourceSansPro-Regular",
+    fontFamily: 'SourceSansPro-Regular',
   },
   card_footer: {
     // backgroundColor: 'red',
     marginTop: 5,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   card_footer_info: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   card_footer_info_avatar: {
     width: 22,
@@ -414,15 +424,15 @@ const styles = StyleSheet.create({
   card_footer_info_name: {
     marginLeft: 5,
     color: mlColors.black,
-    fontFamily: "SourceSansPro-Regular",
+    fontFamily: 'SourceSansPro-Regular',
   },
   card_footer_like: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginRight: 20,
   },
   card_footer_watch: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

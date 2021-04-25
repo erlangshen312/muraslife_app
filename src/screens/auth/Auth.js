@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Image, View, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, Image, View, TouchableOpacity, Text, StatusBar } from "react-native";
 import {
   dimensionWidth,
   mlColors,
@@ -12,6 +12,7 @@ const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   return (
     <View style={styles.container}>
+      <StatusBar backgroundColor={mlColors.dark_red}/>
       <View style={styles.logo_container}>
         <Image
           source={require("../../assets/images/muraslife-logo2.png")}
@@ -51,8 +52,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: dimensionWidth / 2 + 120,
-    height: dimensionHeight / 5 + 30,
+    // padding:20,
+    width: dimensionWidth ,
+    height: dimensionHeight * 120 / dimensionWidth,
+
   },
 
 });

@@ -87,26 +87,6 @@ export default function ProfileImage({ bioData }) {
       .catch((err) => {
         console.log(err);
       });
-
-    // try {
-    //   await fetch(`${API.apiv1}/api/users/avatar`, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-    //       'x-auth-token': token,
-    //     },
-    //     body: JSON.stringify(formData),
-    //   })
-    //     .then((response) => response.json())
-    //     .then((responseJson) => {
-    //       console.log(responseJson);
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //     });
-    // } catch (err) {
-    //   console.error(err);
-    // }
   };
 
   return (

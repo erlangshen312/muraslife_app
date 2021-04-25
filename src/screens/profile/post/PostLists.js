@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,15 +7,15 @@ import {
   SafeAreaView,
 } from 'react-native';
 import axios from 'axios';
-import {API, apiUrl} from '../../../configs/config';
-import {getToken} from '../../../utils/asyncStorage';
-import {ActionSheet} from 'react-native-cross-actionsheet';
-import {useNavigation} from '@react-navigation/native';
+import { API, apiUrl } from '../../../configs/config';
+import { getToken } from '../../../utils/asyncStorage';
+import { ActionSheet } from 'react-native-cross-actionsheet';
+import { useNavigation } from '@react-navigation/native';
 import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 // import {snack} from '../../../utils/snack';
 
-export default function PostLists({posts, getUserPostsList}) {
+export default function PostLists({ posts, getUserPostsList }) {
   const navigation = useNavigation();
 
   const timeLeft = (item) => {
@@ -26,7 +26,7 @@ export default function PostLists({posts, getUserPostsList}) {
     );
     const hoursLeft = moment.duration(ms).format('HH:mm:ss');
     const isLeft = moment(currentDayTime).isBefore(finishDayTime);
-    return {hoursLeft, isLeft};
+    return { hoursLeft, isLeft };
   };
   const _handleUpdateTimer = (hoursLeft, isLeft, item) => {
     console.log(isLeft);
@@ -35,7 +35,7 @@ export default function PostLists({posts, getUserPostsList}) {
     // if (isLeft === false) return snack(`Допиши код и подправь бэкэнд!`);
   };
   const _handleOpenActionSheet = (item) => {
-    const {hoursLeft, isLeft} = timeLeft(item);
+    const { hoursLeft, isLeft } = timeLeft(item);
     ActionSheet.options({
       options: [
         {
@@ -47,7 +47,7 @@ export default function PostLists({posts, getUserPostsList}) {
         {
           text: 'Изменить',
           onPress: () =>
-            navigation.navigate('Update', {item, getUserPostsList}),
+            navigation.navigate('Update', { item, getUserPostsList }),
         },
         {
           text: 'Удалить',
@@ -55,7 +55,7 @@ export default function PostLists({posts, getUserPostsList}) {
           onPress: () => _handleDeletePost(item._id),
         },
       ],
-      cancel: {text: 'Назад', onPress: () => console.log('cancel')},
+      cancel: { text: 'Назад', onPress: () => console.log('cancel') },
     });
   };
 
@@ -93,9 +93,10 @@ export default function PostLists({posts, getUserPostsList}) {
                 margin: 5,
               }}
               onPress={() =>
-                navigation.navigate('Details', {item, _handleDeletePost})
+                navigation.navigate('Details', { item, _handleDeletePost })
               }
-              onLongPress={() => _handleOpenActionSheet(item)}>
+              onLongPress={() => _handleOpenActionSheet(item)}
+            >
               <View>
                 <View>
                   <View
@@ -104,9 +105,10 @@ export default function PostLists({posts, getUserPostsList}) {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
                       marginBottom: 10,
-                    }}>
-                    <Text style={{fontWeight: '800'}}>{item.title}</Text>
-                    <Text style={{fontWeight: '800'}}>{item.cost}</Text>
+                    }}
+                  >
+                    <Text style={{ fontWeight: '800' }}>{item.title}</Text>
+                    <Text style={{ fontWeight: '800' }}>{item.cost}</Text>
                   </View>
                   <Text>
                     "Lorem ipsum end the of life some one will read some time is
@@ -118,7 +120,8 @@ export default function PostLists({posts, getUserPostsList}) {
                       flexDirection: 'column',
                       // justifyContent: 'space-between',
                       marginBottom: 10,
-                    }}>
+                    }}
+                  >
                     <Text>{item.adress}</Text>
                     <Text>{item._metro}</Text>
                     <Text>{item.date}</Text>
