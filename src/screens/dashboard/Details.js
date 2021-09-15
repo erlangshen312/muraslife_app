@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
   Modal,
+  Platform,
 } from 'react-native';
 import {
   imageUrl,
@@ -47,11 +48,7 @@ export default function Details({ route, navigation }) {
   }
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      style={{ backgroundColor: '#fff' }}
-    >
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View>
         <Text>{item.id}</Text>
         {item.banner && (
@@ -59,7 +56,7 @@ export default function Details({ route, navigation }) {
             source={{ uri: `${API.apiv1}/${item.banner}` }}
             style={{
               width: ITEM_WIDTH,
-              // height: ITEM_HEIGHT / 4,
+              height: ITEM_HEIGHT / 2,
               margin: 0,
               padding: 0,
             }}
@@ -142,7 +139,7 @@ export default function Details({ route, navigation }) {
             <Image
               style={styles.card_footer_info_avatar}
               source={
-                item.avatar ? { uri: imageUrl + '/' + item.avatar } : USER_LOGO
+                item.avatar ? { uri: API.apiv1 + '/' + item.avatar } : ''
               }
             />
             <Text style={styles.card_footer_info_name}>{item.name}</Text>
@@ -222,6 +219,7 @@ export default function Details({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
   header: {
     padding: 10,

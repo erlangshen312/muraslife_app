@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "653474033449",
+    "project_id": "muraslife-654b4",
+    "storage_bucket": "muraslife-654b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653474033449:android:4a9a0b752449fbe940d138",
+        "android_client_info": {
+          "package_name": "com.muras_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "653474033449-c447e4gh9anlip72lor7nt3dab0kgnjg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.muras_app",
+            "certificate_hash": "06294496fb7447cce4c822eadb320141a821e02d"
+          }
+        },
+        {
+          "client_id": "653474033449-uindpkb1mcgkqt5gpr8910deobkqp5p5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZuMEM7NwCv5e9tCq8CQNQCsLvP6nHp-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "653474033449-uindpkb1mcgkqt5gpr8910deobkqp5p5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,4 @@
-import {Dimensions} from 'react-native';
+import { Dimensions } from 'react-native';
 
 //use niceColors lib
 
@@ -8,7 +8,7 @@ export const configs = {
       code: 'ru-RU',
       name: 'Русский',
       short: 'ru',
-      active: true,
+      active: true, 
     },
     en: {
       code: 'en-US',
@@ -27,8 +27,9 @@ export const configs = {
 
 export const API = {
   // apiv1: 'http://10.0.2.2:5000',
-  apiv1: 'http://192.168.1.67:5000',
+  // apiv1: 'http://192.168.1.67:5000',
   // apiv1: 'http://192.168.43.167:5000',
+  apiv1: 'http://192.168.125.101:5000',
   // apiv1: 'http://localhost:5000',
   // apiv1: 'https://muras.life',
 };
@@ -44,7 +45,7 @@ export const globalConfig = {
   SOM: 'Cом',
 };
 
-const {width, height} = Dimensions.get('screen');
+const { width, height } = Dimensions.get('screen');
 export const ITEM_WIDTH = width;
 export const ITEM_HEIGHT = height * 0.75;
 

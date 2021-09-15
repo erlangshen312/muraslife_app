@@ -22,7 +22,7 @@ import {
   API,
 } from '../../../configs/config';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { phoneCall, whatsapp } from '../../../components/talk';
+import { phoneCall, telephone, whatsapp } from "../../../components/talk";
 import { metro, location } from '../../../components/find';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { getAuthData, getToken } from '../../../utils/asyncStorage';
@@ -88,7 +88,7 @@ export default function PostDetails({ route, navigation }) {
         {item.banner && (
           <Image
             source={
-              item.banner ? { uri: `${API.apiv1}/${item.banner}` } : USER_LOGO
+              item.banner ? { uri: `${API.apiv1}/${item.banner}` } : ""
             }
             style={{
               width: ITEM_WIDTH,
