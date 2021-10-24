@@ -23,7 +23,7 @@ import momentDurationFormatSetup from 'moment-duration-format';
 // import {snack} from '../utils/snack';
 import { WebView } from 'react-native-webview';
 import { getAuthData, getToken } from '../utils/asyncStorage';
-import axios from "axios";
+import axios from 'axios';
 
 moment.locale('ru');
 
@@ -166,7 +166,6 @@ export default function PostsLists({
     setIsFavorite(!isFavorite);
   };
 
-  console.warn(posts);
   return (
     <ScrollView
       style={styles.scroll}
@@ -176,95 +175,93 @@ export default function PostsLists({
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      {/* {type === 'dashboard' && <Banners />} */}
       <View style={styles.container}>
-        {posts &&
-          posts.map((item) => (
-            <TouchableOpacity
-              style={styles.card}
-              key={item._id}
-              onPress={() => _handleOpenDetail(item, close)}
-            >
-              {/* <View
+        {posts?.map((item) => (
+          <TouchableOpacity
+            style={styles.card}
+            key={item._id}
+            onPress={() => _handleOpenDetail(item, close)}
+          >
+            {/* <View
                 style={{
                   flex: 1, */}
-              {/* // justifyContent: 'flex-start', // backgroundColor: '#e5e5e5', // */}
-              {/* }}> */}
-              {/* onLongPress=
+            {/* // justifyContent: 'flex-start', // backgroundColor: '#e5e5e5', // */}
+            {/* }}> */}
+            {/* onLongPress=
                 {type === 'Profile'
                   ? () => _handleOpenProfileActionSheet(item)
                   : _handleOpenDashboardActionSheet(item)} */}
-              <Image
-                style={{
-                  borderRadius: 5,
-                  width: 135,
-                  height: 100,
-                  // alignSelf: 'center',
-                  // aspectRatio: 5 / 3,
-                }}
-                source={{
-                  uri: `${API.apiv1}/${item.banner}`,
-                }}
-              />
-              {/* </View> */}
-              <View
-                style={{
-                  flex: 1,
-                  paddingHorizontal: 10,
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text numberOfLines={2} style={styles.card_header_title}>
-                  {item.title}
-                </Text>
-                <View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text numberOfLines={1} style={styles.card_header_cost}>
-                      {item.cost && item.cost}
-                    </Text>
-                    <FontAwesome5 name="ruble-sign" size={14} />
-                  </View>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={styles.card_body_metro_title}>
-                      {item._metro}
-                    </Text>
-                    <View
-                      style={[
-                        { backgroundColor: `${item.color}` },
-                        styles.card_body_metro_icon,
-                      ]}
-                    />
-                  </View>
-                  <Text numberOfLines={2} style={styles.card_body_metro_title}>
-                    {moment(item.date).format('Do MMM HH:MM')}
+            {/*<Image*/}
+            {/*  style={{*/}
+            {/*    borderRadius: 5,*/}
+            {/*    width: 135,*/}
+            {/*    height: 100,*/}
+            {/*    // alignSelf: 'center',*/}
+            {/*    // aspectRatio: 5 / 3,*/}
+            {/*  }}*/}
+            {/*  source={{*/}
+            {/*    uri: `${API.apiv1}/${item.banner}`,*/}
+            {/*  }}*/}
+            {/*/>*/}
+            {/* </View> */}
+            <View
+              style={{
+                flex: 1,
+                paddingHorizontal: 10,
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text numberOfLines={2} style={styles.card_header_title}>
+                {item.title}
+              </Text>
+              <View>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text numberOfLines={1} style={styles.card_header_cost}>
+                    {item.price && item.price}
                   </Text>
+                  <FontAwesome5 name="ruble-sign" size={14} />
                 </View>
-                <TouchableOpacity
-                  style={{
-                    position: 'absolute',
-                    bottom: -5,
-                    right: -5,
-                    padding: 5,
-                  }}
-                  onPress={() => _handleFavorite(item)}
-                >
-                  {isFavorite === false ? (
-                    <Icon
-                      name="heart-outline"
-                      size={22}
-                      style={{ color: mlColors.brown }}
-                    />
-                  ) : (
-                    <Icon
-                      name="heart"
-                      size={22}
-                      style={{ color: mlColors.light_red }}
-                    />
-                  )}
-                </TouchableOpacity>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={styles.card_body_metro_title}>
+                    {item._metro}
+                  </Text>
+                  <View
+                    style={[
+                      { backgroundColor: `${item.color}` },
+                      styles.card_body_metro_icon,
+                    ]}
+                  />
+                </View>
+                <Text numberOfLines={2} style={styles.card_body_metro_title}>
+                  {moment(item.date).format('Do MMM HH:MM')}
+                </Text>
               </View>
-            </TouchableOpacity>
-          ))}
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  bottom: -5,
+                  right: -5,
+                  padding: 5,
+                }}
+                onPress={() => _handleFavorite(item)}
+              >
+                {isFavorite === false ? (
+                  <Icon
+                    name="heart-outline"
+                    size={22}
+                    style={{ color: mlColors.brown }}
+                  />
+                ) : (
+                  <Icon
+                    name="heart"
+                    size={22}
+                    style={{ color: mlColors.light_red }}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
       <Modal
         animationType="fade"
@@ -316,6 +313,7 @@ const styles = StyleSheet.create({
     // fontFamily: 'Source Sans Pro',
   },
   card: {
+    height: 150,
     flex: 1,
     flexDirection: 'row',
     marginBottom: 10,

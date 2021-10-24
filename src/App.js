@@ -1,9 +1,9 @@
-import React, {useState, useEffect, useMemo} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {AuthContext} from './AuthContext';
+import React, { useState, useEffect, useMemo } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { AuthContext } from './AuthContext';
 import SpashScreen from './components/Splash';
-import {getToken, removeToken} from './utils/asyncStorage';
-import {AuthStackScreen, TabStackScreen, RootStack} from './routes/routes';
+import { getToken, removeToken } from './utils/asyncStorage';
+import { AuthStackScreen, TabStackScreen, RootStack } from './routes/routes';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -48,7 +48,7 @@ const App = () => {
 
   const RootStackScreen = () => (
     <RootStack.Navigator headerMode="none">
-      {userToken ? (
+      {!userToken ? (
         <RootStack.Screen
           name="App"
           component={TabStackScreen}

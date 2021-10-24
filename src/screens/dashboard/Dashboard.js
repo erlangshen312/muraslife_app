@@ -6,6 +6,7 @@ import { API } from '../../configs/config';
 import Search from './header/Search';
 import Category from './header/Category';
 import PostsLists from '../../components/PostsLists';
+import SearchComponent from '../../components/SearchComponent';
 
 const wait = (timeout) => {
   return new Promise((resolve) => {
@@ -49,9 +50,7 @@ const Dashboard = ({ navigation }) => {
     //   marginTop: Platform.OS === 'android' ? 0 : 40,
     // }}
     >
-      <View style={{ padding: 10 }}>
-        <Search />
-      </View>
+      <Search />
       <Category />
       <PostsLists
         type={'dashboard'}

@@ -3,7 +3,6 @@ import React, {
   useLayoutEffect,
   useRef,
   useCallback,
-  useMemo,
   useEffect,
 } from 'react';
 import {
@@ -17,16 +16,9 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { getAuthData, getToken, setAuthData } from '../../utils/asyncStorage';
 import ProfileAbout from './ProfileAbout';
-// import PostLists from './post/PostLists';
 import axios from 'axios';
-import { API, apiUrl, mlColors } from '../../configs/config';
+import { API, mlColors } from '../../configs/config';
 import PostsLists from '../../components/PostsLists';
-import defaultAvatar from '../../assets/images/user.png';
-import BottomSheet, {
-  BottomSheetScrollView,
-  BottomSheetFlatList,
-} from '@gorhom/bottom-sheet';
-import { SafeAreaView } from 'react-native';
 
 const wait = (timeout) => {
   return new Promise((resolve) => {
@@ -52,17 +44,15 @@ const Profile = ({ navigation }) => {
       //   </TouchableOpacity>
       // ),
       headerTitle: () => (
-        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>
-          {bioData && bioData.name}
-        </Text>
+        <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Профиль</Text>
       ),
       headerRight: () => (
         <TouchableOpacity
           style={{ marginRight: 10, padding: 3 }}
-          onPress={() => navigation.navigate('Settings')}
-          title="Выйти"
+          onPress={() => navigation.navigate('Create', { getUserPostsList })}
+          title="Создать объявление"
         >
-          <Icon name="settings-outline" size={24} />
+          <Icon name="add-circle-outline" size={28} />
         </TouchableOpacity>
       ),
     });
@@ -128,7 +118,6 @@ const Profile = ({ navigation }) => {
   }, []);
 
   return (
-    // <SafeAreaView>
     <ScrollView
       style={{ backgroundColor: mlColors.white }}
       showsVerticalScrollIndicator={false}
@@ -137,64 +126,7 @@ const Profile = ({ navigation }) => {
       }
     >
       {bioData && <ProfileAbout bioData={bioData} />}
-      <View style={styles.profile_count}>
-        <TouchableOpacity
-          style={{ alignItems: 'center' }}
-          onPress={() => navigation.navigate('Create', { getUserPostsList })}
-        >
-          <Icon
-            style={{ color: mlColors.dark_blue }}
-            name="create-outline"
-            size={34}
-          />
-          <Text style={{ fontWeight: 'bold', color: mlColors.dark_blue }}>
-            Объявление
-          </Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* <View style={{flexDirection: 'row'}}>
-        <Text
-          style={{
-            color: mlColors.dark,
-            fontWeight: 'bold',
-            fontSize: 14,
-            marginHorizontal: 10,
-            marginVertical: 10,
-          }}>
-          ДРУЗЬЯ
-        </Text>
-        <Text
-          style={{
-            color: mlColors.light_brown,
-            fontSize: 14,
-            marginVertical: 10,
-          }}>
-          {posts.length}
-        </Text>
-      </View> */}
-      <View style={{ flexDirection: 'row' }}>
-        <Text
-          style={{
-            color: mlColors.dark,
-            fontWeight: 'bold',
-            fontSize: 14,
-            marginHorizontal: 10,
-            marginVertical: 10,
-          }}
-        >
-          ОБЪЯВЛЕНИЯ
-        </Text>
-        <Text
-          style={{
-            color: mlColors.light_brown,
-            fontSize: 14,
-            marginVertical: 10,
-          }}
-        >
-          {posts.length}
-        </Text>
-      </View>
       <PostsLists
         type={'profile'}
         posts={posts}
@@ -204,18 +136,25 @@ const Profile = ({ navigation }) => {
         getUserPostsList={getUserPostsList}
       />
     </ScrollView>
-    // </SafeAreaView>
   );
 };
 
 export default Profile;
 
 const styles = StyleSheet.create({
-  profile_count: {
-    flexDirection: 'row',
-    padding: 10,
-    margin: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: mlColors.dark_white,
+  // profile_count: {
+  //   flexDirection: 'row',
+  //   padding: 10,
+  //   margin: 5,
+  //   borderBottomWidth: 1,
+  //   borderBottomColor: mlColors.dark_white,
+  // },
+  create_button: {
+    backgroundColor: '#1D77E8',
+    color: '#fff',
+    margin: 10,
+    width: 100,
+    height: 56,
+    alignItems: 'center',
   },
 });

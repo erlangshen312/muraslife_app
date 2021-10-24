@@ -1,6 +1,7 @@
 # OSX
 #
 Untitled
+.vscode
 .env
 .DS_Store
 __tests__

@@ -24,7 +24,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import { getToken, setAuthData } from '../../utils/asyncStorage';
 import axios from 'axios';
 import FFormData from 'form-data';
-import RNFetchBlob from 'rn-fetch-blob';
+// import RNFetchBlob from 'rn-fetch-blob';
 
 export default function ProfileImage({ bioData }) {
   const [img, setImg] = useState();
@@ -49,7 +49,7 @@ export default function ProfileImage({ bioData }) {
       cropperToolbarWidgetColor: '#3498DB',
     })
       .then((image) => {
-        _handleUploadPhoto(image);
+        // _handleUploadPhoto(image);
         setImg(image);
       })
       .catch((e) => {
