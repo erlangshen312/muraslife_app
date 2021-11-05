@@ -26,7 +26,7 @@ export const configs = {
 };
 
 export const API = {
-  apiv1: 'http://192.168.115.101:5000',
+  apiv1: 'http://192.168.82.101:5000',
 };
 
 //NEWS ELGEZIT
@@ -79,7 +79,6 @@ export const mlColors = {
 export const appName = 'Muras Life';
 export const socialLink = {
   insta: 'http://instagram.com/muras.life',
-  // teleg: 'http://instagram.com/muras.life',
 };
 export const version = '1.0.0';
 

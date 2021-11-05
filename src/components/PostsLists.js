@@ -327,7 +327,6 @@ const styles = StyleSheet.create({
       height: 1,
     },
     shadowOpacity: 0.2,
-    shadowRadius: 1.41,
     elevation: 0.5,
   },
   card_header: {

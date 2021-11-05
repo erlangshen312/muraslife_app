@@ -5,9 +5,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Auth from '../screens/auth/Auth';
 import Dashboard from '../screens/dashboard/Dashboard';
 import Details from '../screens/dashboard/Details';
+import Find from '../screens/dashboard/Find';
 import News from '../screens/news/News';
 import NewsDetails from '../screens/news/NewsDetails';
-import Shop from '../screens/shop/Shop';
 import Profile from '../screens/profile/Profile';
 import PostCreate from '../screens/profile/post/PostCreate';
 import PostUpdate from '../screens/profile/post/PostUpdate';
@@ -19,6 +19,7 @@ import AboutApp from '../screens/profile/settings/AboutApp';
 import Notification from '../screens/profile/notification/Notification';
 import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import { mlColors } from '../configs/config';
+import { ProfileData } from '../screens/profile/ProfileData';
 
 const AuthStack = createStackNavigator();
 export const AuthStackScreen = () => (
@@ -53,6 +54,14 @@ const DashboardStackScreen = () => (
         animationEnabled: false,
       }}
     />
+    <DashboardStack.Screen
+      name="Find"
+      component={Find}
+      options={{
+        headerTitle: false,
+        animationEnabled: false,
+      }}
+    />
   </DashboardStack.Navigator>
 );
 
@@ -62,7 +71,10 @@ const ProfileStackScreen = () => (
     <ProfileStack.Screen
       name="Profile"
       component={Profile}
-      options={{ animationEnabled: false }}
+      options={{
+        headerShown: false,
+        animationEnabled: false,
+      }}
     />
     <ProfileStack.Screen
       name="Create"
@@ -77,6 +89,11 @@ const ProfileStackScreen = () => (
     <ProfileStack.Screen
       name="PostLists"
       component={PostLists}
+      options={{ animationEnabled: false }}
+    />
+    <ProfileStack.Screen
+      name="ProfileData"
+      component={ProfileData}
       options={{ animationEnabled: false }}
     />
     <ProfileStack.Screen
@@ -126,33 +143,18 @@ const NewsStackScreen = () => (
   </NewsStack.Navigator>
 );
 
-const ShopStack = createStackNavigator();
-const ShopStackScreen = () => (
-  <ShopStack.Navigator>
-    <ShopStack.Screen
-      name="Shop"
-      component={Shop}
-      options={{ animationEnabled: false }}
-    />
-    {/* <ShopStack.Screen
-      name="Details"
-      component={ShopDetails}
-      options={{animationEnabled: false}}
-    /> */}
-    {/* <ShopStack.Screen
-      name="Checkout"
-      component={ShopCheckout}
-      options={{animationEnabled: false}}
-    /> */}
-  </ShopStack.Navigator>
-);
-
 function getTabBarVisible(route) {
   const routeName = getFocusedRouteNameFromRoute(route);
   switch (routeName) {
     case 'Details':
       return false;
+    case 'Find':
+      return false;
     case 'Create':
+      return false;
+    case 'Auth':
+      return false;
+    case 'Sign in':
       return false;
     default:
       true;
@@ -185,26 +187,6 @@ export const TabStackScreen = () => (
         tabBarVisible: getTabBarVisible(route),
       })}
     />
-    {/* <TabStack.Screen
-      name="News"
-      component={NewsStackScreen}
-      options={{
-        tabBarLabel: 'News',
-        tabBarIcon: ({color, size}) => (
-          <Icon name="newspaper-outline" color={color} size={size} />
-        ),
-      }}
-    />
-    <TabStack.Screen
-      name="Shop"
-      component={ShopStackScreen}
-      options={{
-        tabBarLabel: 'Shop',
-        tabBarIcon: ({color, size}) => (
-          <Icon name="fast-food-outline" color={color} size={size} />
-        ),
-      }}
-    /> */}
     <TabStack.Screen
       name="Profile"
       component={ProfileStackScreen}

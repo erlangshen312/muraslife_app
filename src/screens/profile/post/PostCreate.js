@@ -28,6 +28,10 @@ const Container = styled(ScrollView)`
 
 const Scroll = styled(ScrollView)``;
 
+const Block = styled(View)`
+  padding: 20px;
+`;
+
 const SaveContainer = styled(View)`
   position: absolute;
   bottom: 0;
@@ -36,7 +40,7 @@ const SaveContainer = styled(View)`
 `;
 
 const InputBase = styled(TextInput)`
-  background-color: #fff;
+  background-color: #f5f5f5;
   margin-bottom: 10px;
   min-height: 55px;
   padding: 0 15px;
@@ -66,10 +70,8 @@ export default function PostCreate({ route, navigation }) {
   const [metroSelected, setMetroSelected] = useState();
   const [isCategory, setIsCategory] = useState(false);
   const [categorySelected, setCategorySelected] = useState();
-  // const { getUserPostsList } = route.params;
 
   function goBack() {
-    // getUserPostsList();
     navigation.goBack(null);
   }
 
@@ -157,7 +159,6 @@ export default function PostCreate({ route, navigation }) {
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType={'default'}
-              style={styles.text_input}
               placeholder="Enter the title"
               maxLength={45}
               value={title}
@@ -179,24 +180,16 @@ export default function PostCreate({ route, navigation }) {
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType={'phone-pad'}
-              style={styles.text_input}
               placeholder="Enter the cost"
               maxLength={12}
               value={price}
               onChangeText={(text) => setForm({ ...form, price: text })}
             />
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
+            <Row>
               <InputBase
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType={'default'}
-                style={[styles.text_input, { minWidth: '83%' }]}
                 placeholder="Enter the adress"
                 maxLength={100}
                 value={address}
@@ -215,12 +208,11 @@ export default function PostCreate({ route, navigation }) {
                   style={{ color: mlColors.white }}
                 />
               </TouchableOpacity>
-            </View>
+            </Row>
             <InputBase
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType={'phone-pad'}
-              style={styles.text_input}
               placeholder="+7XXXZZZOORR"
               maxLength={12}
               value={phone}

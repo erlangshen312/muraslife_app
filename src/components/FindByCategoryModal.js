@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
       height: 1,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 1.41,
+    // shadowRadius: 1.41,
     elevation: 3,
   },
   category_text: {

@@ -1,61 +1,51 @@
-import React, { useState } from "react";
-import { StyleSheet, Image, View, TouchableOpacity, Text, StatusBar } from "react-native";
-import {
-  dimensionWidth,
-  mlColors,
-  dimensionHeight,
-} from "../../configs/config";
-import Login from "./Login";
-import Registration from "./Registration";
+import React, { useState } from 'react';
+import { View, TouchableOpacity, Text, ScrollView } from 'react-native';
+import Login from './Login';
+import Registration from './Registration';
+import styled from 'styled-components';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   return (
-    <View style={styles.container}>
-      <StatusBar backgroundColor={mlColors.dark_red}/>
-      <View style={styles.logo_container}>
-        <Image
-          source={require("../../assets/images/muraslife-logo2.png")}
-          style={styles.logo}
-        />
-      </View>
+    <Container>
+      <SloganTitle>Привет! </SloganTitle>
+      <SloganSubtitle>
+        Теперь сможешь искать объявления легко, а так же добавлять...
+      </SloganSubtitle>
       {isLogin ? <Login /> : <Registration />}
-      <TouchableOpacity style={{
-        paddingVertical: 5,
-      }} onPress={() => setIsLogin(!isLogin)}>
-        <Text
-          style={{
-            textAlign: "center",
-            color: "#eaeaea",
-            fontSize: 14,
-            fontWeight: "600",
-          }}
-        >
-          {isLogin ? "Регистрация" : "Войти"}
-        </Text>
-      </TouchableOpacity>
-    </View>
+      <SwitchButton onPress={() => setIsLogin(!isLogin)}>
+        <SwitchText>{isLogin ? 'Регистрация' : 'Войти'}</SwitchText>
+      </SwitchButton>
+    </Container>
   );
 };
-
 export default Auth;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 2,
-    backgroundColor: mlColors.dark_red,
-    padding: 40,
-  },
-  logo_container: {
-    alignItems: "center",
-    flexGrow: 2,
-    justifyContent: "center",
-  },
-  logo: {
-    // padding:20,
-    width: dimensionWidth ,
-    height: dimensionHeight * 120 / dimensionWidth,
+const Container = styled(ScrollView)`
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+`;
 
-  },
+const SloganTitle = styled(Text)`
+  font-size: 55px;
+  color: #1d77e8;
+  font-weight: 700;
+`;
 
-});
+const SloganSubtitle = styled(Text)`
+  font-size: 38px;
+  color: #000;
+  font-weight: 700;
+`;
+
+const SwitchButton = styled(TouchableOpacity)`
+  padding: 15px;
+`;
+
+const SwitchText = styled(Text)`
+  text-align: center;
+  color: #1d77e8;
+  font-weight: 600;
+  font-size: 16px;
+`;

@@ -149,13 +149,11 @@ const styles = StyleSheet.create({
       height: 1,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 1.41,
     elevation: 3,
   },
   category_text: {
     color: mlColors.primary,
     fontSize: 17,
-    // fontWeight: '600',
     fontFamily: 'SourceSansPro-SemiBold',
   },
   category_icon: {
