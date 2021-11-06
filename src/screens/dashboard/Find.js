@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { SafeAreaView } from 'react-native';
 
 import { SubGetCategories } from '../../components/SubGetCategories';
-import { Lists } from '../../components/Lists';
+import { ListsCategoriesPosts } from '../../components/ListsCategoriesPosts';
 
 const Find = ({ route }) => {
   const { item } = route.params;
   return (
     <Container>
       <SubGetCategories item={item} />
-      <Lists sub_category={item} />
+      <ListsCategoriesPosts />
     </Container>
   );
 };

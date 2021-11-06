@@ -8,8 +8,8 @@ import {
   SUBCATEGORY_ERROR,
   CATEGORY_ID,
   DESCENDANTS_ID,
-  GET_POSTS,
-  POST_ERROR,
+  GET_CATEGORY_POSTS,
+  CATEGORY_POST_ERROR,
   SET_CATEGORY,
   SET_CATEGORY_ERROR,
   SET_SUB_CATEGORY,
@@ -112,12 +112,12 @@ export const getPostsCategories = (item) => async (dispatch) => {
       `${API.apiv1}/api/category/find/${descendants_id}`,
     );
     dispatch({
-      type: GET_POSTS,
-      payload: res?.data?.result,
+      type: GET_CATEGORY_POSTS,
+      payload: res.data?.result,
     });
   } catch (err) {
     dispatch({
-      type: POST_ERROR,
+      type: CATEGORY_POST_ERROR,
       payload: {
         msg: err?.response?.statusText,
         status: err?.response?.status,

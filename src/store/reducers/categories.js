@@ -8,6 +8,8 @@ import {
   SET_CATEGORY,
   SET_SUB_CATEGORY,
   SET_SUB_CATEGORY_ERROR,
+  GET_CATEGORY_POSTS,
+  CATEGORY_POST_ERROR,
 } from '../constants/types';
 
 const INITIAL_STATE = {
@@ -68,6 +70,12 @@ export default function (state = INITIAL_STATE, action) {
         isLoading: false,
       };
     case DESCENDANTS_ID:
+      return {
+        ...state,
+        posts: payload,
+        isLoading: false,
+      };
+    case GET_CATEGORY_POSTS:
       return {
         ...state,
         posts: payload,
