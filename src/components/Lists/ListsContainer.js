@@ -16,7 +16,7 @@ const ListsContainer = () => {
 
   useEffect(() => {
     getAllPosts();
-  }, []);
+  }, [posts]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
