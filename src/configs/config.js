@@ -26,7 +26,7 @@ export const configs = {
 };
 
 export const API = {
-  apiv1: 'http://192.168.82.101:5000',
+  apiv1: 'http://192.168.202.102:5000',
 };
 
 //NEWS ELGEZIT

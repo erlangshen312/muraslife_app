@@ -64,9 +64,9 @@ const Card = styled(TouchableOpacity)`
   padding: 10px;
   border-radius: 5px;
   margin: 5px 0;
-  background-color: #f5f5f5;
+  background-color: #fff;
   shadow-color: #7b7b7b;
-  elevation: 0.5;
+  elevation: 3;
 `;
 
 const CardContent = styled(View)`

@@ -16,8 +16,6 @@ import { getToken, setToken } from '../../utils/asyncStorage';
 import styled from 'styled-components';
 
 const Registration = () => {
-  const { signUp } = useContext(AuthContext);
-
   const [nickname, setNickname] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');

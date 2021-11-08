@@ -1,7 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 import Auth from '../screens/auth/Auth';
 import Dashboard from '../screens/dashboard/Dashboard';
 import Details from '../screens/dashboard/Details';
@@ -17,8 +19,6 @@ import Settings from '../screens/profile/settings/Settings';
 import Faq from '../screens/profile/settings/Faq';
 import AboutApp from '../screens/profile/settings/AboutApp';
 import Notification from '../screens/profile/notification/Notification';
-import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
-import { mlColors } from '../configs/config';
 import { ProfileData } from '../screens/profile/ProfileData';
 
 const AuthStack = createStackNavigator();
@@ -165,14 +165,29 @@ const TabStack = createBottomTabNavigator();
 export const TabStackScreen = () => (
   <TabStack.Navigator
     tabBarOptions={{
-      activeTintColor: mlColors.blue,
-      inactiveTintColor: mlColors.note,
+      showLabel: false,
+      scrollEnabled: false,
+      activeTintColor: '#1d77e8',
+      inactiveTintColor: '#374957',
+      labelStyle: {
+        fontSize: 14,
+      },
       tabStyle: {
-        backgroundColor: mlColors.white,
-        paddingBottom: 5,
-        paddingTop: 5,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
+        showIcon: true,
+        showLabel: false,
+        lazyLoad: true,
+        backgroundColor: 'transparent',
+      },
+      style: {
+        height: 55,
+        backgroundColor: 'white',
+        borderTopWidth: 0,
+        position: 'absolute',
+        elevation: 15,
+        borderRadius: 30,
+        margin: 20,
+        marginBottom: 18,
+        padding: 5,
       },
     }}
   >
@@ -180,7 +195,6 @@ export const TabStackScreen = () => (
       name="Dashboard"
       component={DashboardStackScreen}
       options={({ route }) => ({
-        tabBarLabel: 'Главная',
         tabBarIcon: ({ color, size }) => (
           <Icon name="albums" color={color} size={size} />
         ),
@@ -191,7 +205,6 @@ export const TabStackScreen = () => (
       name="Profile"
       component={ProfileStackScreen}
       options={({ route }) => ({
-        tabBarLabel: 'Профиль',
         tabBarIcon: ({ color, size }) => (
           <Icon name="person" color={color} size={size} />
         ),

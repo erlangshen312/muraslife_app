@@ -14,8 +14,6 @@ import { setAuthData, setToken } from '../../utils/asyncStorage';
 import styled from 'styled-components';
 
 const Login = () => {
-  const { signIn } = useContext(AuthContext);
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [warning, setWarning] = useState('');
