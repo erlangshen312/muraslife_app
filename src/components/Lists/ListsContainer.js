@@ -8,19 +8,17 @@ import { ListsComponent } from './ListsComponent';
 const ListsContainer = () => {
   const [refreshing, setRefreshing] = useState(false);
   const scrollRef = useRef();
+  const dispatch = useDispatch();
 
   const { posts, isLoading } = useSelector((state) => state.posts);
 
-  const dispatch = useDispatch();
-  const getAllPosts = () => dispatch(getPosts());
-
   useEffect(() => {
-    getAllPosts();
-  }, []);
+    dispatch(getPosts());
+  }, [dispatch, isLoading]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    await getAllPosts();
+    await dispatch(getPosts());
     wait(2000).then(() => setRefreshing(false));
   }, []);
 

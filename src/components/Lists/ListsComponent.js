@@ -41,20 +41,38 @@ const ListsComponent = ({
       <Container>
         {posts?.map((item) => (
           <Card key={item?._id} onPress={() => _handleOpenDetail(item, close)}>
-            <CardContent>
-              <CardTitle numberOfLines={2}>{item?.title}</CardTitle>
+            <Content>
+              <Title numberOfLines={1}>{item?.title}</Title>
+              <Description numberOfLines={2}>
+                {item?.description} Ноавя жизнь новая часть кола кола ка кдела
+                что жеделать вот жопа еще немного и что бужеьНоавя жизнь новая
+                часть кола кола ка кдела что жеделать вот жопа еще немного и что
+                бужеь
+              </Description>
               <View>
-                <CardPrice>
-                  <CardPriceTitle numberOfLines={1}>
-                    {item?.price}
-                  </CardPriceTitle>
-                  <CardPriceIcon name="ruble-sign" size={12} />
-                </CardPrice>
-                <CardTime numberOfLines={2}>
-                  {moment(item?.date).format('Do MMM HH:MM')}
-                </CardTime>
+                <Metro>
+                  <MetroTitle numberOfLines={1}>
+                    {item?.metro?.name} метро Киевская
+                  </MetroTitle>
+                  <MetroNumber color="#1d77e8" />
+                </Metro>
+                <Location numberOfLines={1}>
+                  {item?.location?.address} Крымская 485 корпус 59
+                </Location>
+                <Time numberOfLines={1}>
+                  {moment(item?.date).format('Do MMMM HH:MM')}
+                </Time>
               </View>
-            </CardContent>
+            </Content>
+            <RightContent>
+              <Price>
+                <PriceTitle numberOfLines={1}>{item?.price}</PriceTitle>
+                <PriceIcon name="ruble-sign" size={12} />
+              </Price>
+              <Favorite>
+                <FontAwesome5 name="heart" size={24} />
+              </Favorite>
+            </RightContent>
           </Card>
         ))}
       </Container>
@@ -70,51 +88,80 @@ const Container = styled(View)`
 `;
 
 const Card = styled(TouchableOpacity)`
-  height: 150px;
+  display: flex;
+  flex-direction: row;
+  height: 140px;
   padding: 10px;
   border-radius: 5px;
   margin: 5px 0;
-  background-color: #fff;
-  shadow-color: #7b7b7b;
-  elevation: 3;
+  background-color: #f5f5f5;
+  shadow-color: #717171;
+  elevation: 2;
 `;
 
-const CardContent = styled(View)`
+const Content = styled(View)`
   flex: 1;
   padding-horizontal: 5px;
   justify-content: space-between;
 `;
 
-const CardTitle = styled(Text)`
+const Title = styled(Text)`
   font-size: 18px;
   font-family: SourceSansPro-Regular;
   flex-shrink: 1;
 `;
 
-const CardDescription = styled(Text)``;
+const Description = styled(Text)`
+  font-size: 15px;
+  color: #666;
+  font-family: SourceSansPro-Regular;
+  flex-shrink: 1;
+`;
 
-const CardPrice = styled(View)`
+const Price = styled(View)`
   display: flex;
   flex-direction: row;
   align-items: center;
 `;
 
-const CardPriceTitle = styled(Text)`
-  font-size: 18px;
-  font-family: SourceSansPro-Bold;
+const PriceTitle = styled(Text)`
+  font-size: 16px;
   padding-right: 3px;
+  font-family: SourceSansPro-Bold;
 `;
 
-const CardPriceIcon = styled(FontAwesome5)``;
+const PriceIcon = styled(FontAwesome5)``;
 
-const CardTime = styled(Text)`
+const Metro = styled(TouchableOpacity)`
+  justify-content: flex-start;
+  align-self: flex-start;
+  flex-direction: row;
+  align-items: center;
+`;
+const MetroTitle = styled(Text)``;
+const MetroNumber = styled(View)`
+  padding: 3px;
+  width: 8px;
+  height: 8px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
+  border-radius: 100px;
+  opacity: 0.7;
+  background-color: ${(props) => props.color};
+`;
+
+const Location = styled(Text)``;
+
+const RightContent = styled(View)`
+  justify-content: space-between;
+  align-items: flex-end;
+`;
+
+const Time = styled(Text)`
   font-family: SourceSansPro-Regular;
 `;
 
-const CardFavorite = styled(TouchableOpacity)`
-  height: 60px;
-  width: 60px;
-  padding: 10px;
-  background-color: #1297ad;
-  elevation: 0.5;
+const Favorite = styled(TouchableOpacity)`
+  padding: 2px;
 `;
