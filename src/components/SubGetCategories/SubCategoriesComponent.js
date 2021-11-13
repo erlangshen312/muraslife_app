@@ -15,6 +15,7 @@ const SubCategoriesComponent = ({
       data={subCategories}
       keyExtractor={(item, index) => index.toString()}
       horizontal
+      refreshing={isLoading}
       showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => {
         return (

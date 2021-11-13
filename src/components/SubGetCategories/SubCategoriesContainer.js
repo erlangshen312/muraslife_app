@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { SubCategoriesComponent } from './SubCategoriesComponent';
 import {
+  getPostsCategories,
   getSubCategories,
   setSubCategoryId,
 } from '../../store/actions/categories';
 import { wait } from '../../utils/wait';
+import { SubCategoriesComponent } from './SubCategoriesComponent';
 
 const SubCategoriesContainer = ({ item }) => {
   const scrollRef = useRef();
@@ -15,9 +16,13 @@ const SubCategoriesContainer = ({ item }) => {
 
   const { subCategories, isLoading } = useSelector((state) => state.categories);
 
+  const SubCategories = (item) => dispatch(getSubCategories(item));
+  const SetSubCategory = (item) => dispatch(setSubCategoryId(item));
+  const getCategoriesPosts = (item) => dispatch(getPostsCategories(item));
+
   useEffect(() => {
     dispatch(getSubCategories(item));
-  }, []);
+  }, [item]);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -28,6 +33,7 @@ const SubCategoriesContainer = ({ item }) => {
 
   const selectedSubCategory = (item) => {
     dispatch(setSubCategoryId(item));
+    dispatch(getPostsCategories(item));
   };
 
   return (
