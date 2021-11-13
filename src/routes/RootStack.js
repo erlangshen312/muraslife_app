@@ -1,12 +1,12 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import { DashboardStackScreen } from './DashboardRoutes';
 import { ProfileStackScreen } from './ProfilesRoutes';
 import { getTabBarVisible } from './config/naviFocusedRoutes';
 import { stackNavigationOptions } from './config/stackNavigationOptions';
+import Icon from '../../CustomIcon';
 
 const TabStack = createBottomTabNavigator();
 export const TabStackScreen = () => (
@@ -16,7 +16,7 @@ export const TabStackScreen = () => (
       component={DashboardStackScreen}
       options={({ route }) => ({
         tabBarIcon: ({ color, size }) => (
-          <Icon name="albums" color={color} size={size} />
+          <Icon name="fi-br-home" color={color} size={size} />
         ),
         tabBarVisible: getTabBarVisible(route),
       })}
@@ -26,7 +26,7 @@ export const TabStackScreen = () => (
       component={ProfileStackScreen}
       options={({ route }) => ({
         tabBarIcon: ({ color, size }) => (
-          <Icon name="person" color={color} size={size} />
+          <Icon name="fi-br-user" color={color} size={size} />
         ),
         tabBarVisible: getTabBarVisible(route),
       })}

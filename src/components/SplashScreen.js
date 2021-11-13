@@ -6,11 +6,7 @@ import { ITEM_HEIGHT, ITEM_WIDTH } from '../configs/config';
 
 const SplashScreen = () => (
   <Container>
-    <MaskImage
-      itemWidth={ITEM_WIDTH}
-      itemHeight={ITEM_HEIGHT}
-      source={require('../assets/images/muraslife-logo.png')}
-    />
+    <MaskImage source={require('../assets/images/muraslife-logo.png')} />
   </Container>
 );
 
@@ -20,9 +16,13 @@ const Container = styled(View)`
   flex: 1;
   align-items: center;
   justify-content: center;
+  margin: auto auto;
 `;
+const MaskImage = styled(Image)``;
+/*
 
 const MaskImage = styled(Image)`
-  width: ${(props) => props.itemWidth};
-  height: ${(props) => props.itemHeight - props.itemWidth};
+  // width: ${(props) => props.itemWidth};
+  // height: ${(props) => props.itemHeight - props.itemWidth};
 `;
+*/

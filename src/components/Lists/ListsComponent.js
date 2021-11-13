@@ -5,6 +5,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
@@ -13,8 +14,16 @@ import 'moment/locale/ru';
 
 moment.locale('ru');
 import styled from 'styled-components';
+import { Suspender } from '../_common/Suspender';
 
-const ListsComponent = ({ close, posts, onRefresh, refreshing, scrollRef }) => {
+const ListsComponent = ({
+  close,
+  posts,
+  onRefresh,
+  refreshing,
+  scrollRef,
+  isLoading,
+}) => {
   const navigation = useNavigation();
   const _handleOpenDetail = async (item) => {
     navigation.navigate('Details', { item });
@@ -28,6 +37,7 @@ const ListsComponent = ({ close, posts, onRefresh, refreshing, scrollRef }) => {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
+      <Suspender loading={isLoading} />
       <Container>
         {posts?.map((item) => (
           <Card key={item?._id} onPress={() => _handleOpenDetail(item, close)}>

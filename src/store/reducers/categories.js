@@ -11,6 +11,7 @@ import {
 } from '../constants/types';
 
 const INITIAL_STATE = {
+  mainCategories: [],
   categories: [],
   subCategories: [],
   posts: [],
@@ -27,7 +28,7 @@ export default function (state = INITIAL_STATE, action) {
     case GET_CATEGORIES:
       return {
         ...state,
-        categories: payload,
+        mainCategories: payload,
         isLoading: false,
       };
     case CATEGORY_ERROR:
@@ -63,7 +64,7 @@ export default function (state = INITIAL_STATE, action) {
     case CATEGORY_ID:
       return {
         ...state,
-        categories: payload,
+        mainCategories: payload,
         isLoading: false,
       };
     case DESCENDANTS_ID:

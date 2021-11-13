@@ -12,6 +12,7 @@ import {
 export const getPosts = () => async (dispatch) => {
   try {
     const res = await axios.get(`${API.apiv1}/api/posts`);
+    console.log(res.data);
     dispatch({
       type: GET_POSTS,
       payload: res.data,
@@ -45,6 +46,7 @@ export const addPost = (formData) => async (dispatch) => {
   const config = { headers: { 'Content-Type': 'application/json' } };
   try {
     const res = await axios.post(`${API.apiv1}/api/posts`, formData, config);
+    console.log(res.data);
     dispatch({
       type: ADD_POST,
       payload: res.data,
