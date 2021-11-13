@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import {
   FlatList,
@@ -9,9 +9,9 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {API, mlColors} from '../../../configs/config';
+import { API, mlColors } from '../../../configs/config';
 import CategoryMenu from './CategoryMenu';
-import {getToken} from '../../../utils/asyncStorage';
+import { getToken } from '../../../utils/asyncStorage';
 import FindByCategoryModal from '../../../components/FindByCategoryModal';
 import CategoryModal from '../../../components/CategoryModal';
 
@@ -23,7 +23,7 @@ const wait = (timeout) => {
 
 const Category = () => {
   const [isModal, setIsModal] = useState(false);
-  const [categories, setCategories] = useState();
+  const [categories, setCategories] = useState([]);
   const [isCategory, setIsCategory] = useState(false);
   const [categorySelected, setCategorySelected] = useState();
   const [data, setData] = useState([]);
@@ -32,24 +32,22 @@ const Category = () => {
 
   useEffect(() => {
     getCategory();
-    return () => {
-      getCategory();
-    };
+    return () => getCategory();
   }, []);
 
   const getCategory = async () => {
-    const token = await getToken();
+    // const token = await getToken();
     try {
-      const res = await axios.get(`${API.apiv1}/api/category`, {
+      const res = await axios.get(`${API.apiv1}/api/category/all`, {
         headers: {
           'Content-Type': 'application/json',
-          'x-auth-token': token,
+          // 'x-auth-token': token,
         },
       });
-      setCategories(res.data);
-    } catch (err) {
-      const er = err.response.data;
-      console.warn(er);
+      setCategories(res.data?.result);
+    } catch (error) {
+      const er = error.response.data;
+      console.error(er);
     }
   };
 
@@ -60,18 +58,19 @@ const Category = () => {
   };
 
   const fetchAPI = async (item) => {
-    const token = await getToken();
+    const category_id = item._id;
+
     try {
       const res = await axios.get(
-        `${API.apiv1}/api/category/find/${item._id}`,
+        `${API.apiv1}/api/category/descendants/${category_id}`,
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-auth-token': token,
+            // 'x-auth-token': token,
           },
         },
       );
-      setData(res.data);
+      setData(res.data.result);
     } catch (error) {
       console.error(error);
     }
@@ -84,28 +83,23 @@ const Category = () => {
 
   return (
     <View style={styles.container}>
-      {/* <TouchableOpacity style={styles.menu} onPress={() => setIsModal(true)}>
-        <Icon name="menu-outline" size={22} />
-      </TouchableOpacity> */}
-      <View style={{paddingLeft: 10}}>
+      <View style={{ paddingLeft: 10 }}>
         <FlatList
           data={categories}
           keyExtractor={(item, index) => index.toString()}
           horizontal={true}
           showsHorizontalScrollIndicator={false}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             return (
-              <TouchableHighlight
-                underlayColor={mlColors.light_blue}
-                onPress={() => _handleChoosed(item)}
-                style={styles.category}>
-                {/* <Icon
-                  name="close-outline"
-                  size={10}
-                  style={styles.category_icon}
-                /> */}
-                <Text style={styles.category_text}>{item.title}</Text>
-              </TouchableHighlight>
+              <>
+                <TouchableHighlight
+                  underlayColor={mlColors.light_blue}
+                  onPress={() => _handleChoosed(item)}
+                  style={styles.category}
+                >
+                  <Text style={styles.category_text}>{item.name}</Text>
+                </TouchableHighlight>
+              </>
             );
           }}
         />
@@ -155,13 +149,11 @@ const styles = StyleSheet.create({
       height: 1,
     },
     shadowOpacity: 0.1,
-    shadowRadius: 1.41,
     elevation: 3,
   },
   category_text: {
     color: mlColors.primary,
     fontSize: 17,
-    // fontWeight: '600',
     fontFamily: 'SourceSansPro-SemiBold',
   },
   category_icon: {

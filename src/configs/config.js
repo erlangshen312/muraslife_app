@@ -8,7 +8,7 @@ export const configs = {
       code: 'ru-RU',
       name: 'Русский',
       short: 'ru',
-      active: true, 
+      active: true,
     },
     en: {
       code: 'en-US',
@@ -26,12 +26,7 @@ export const configs = {
 };
 
 export const API = {
-  // apiv1: 'http://10.0.2.2:5000',
-  // apiv1: 'http://192.168.1.67:5000',
-  // apiv1: 'http://192.168.43.167:5000',
-  apiv1: 'http://192.168.125.101:5000',
-  // apiv1: 'http://localhost:5000',
-  // apiv1: 'https://muras.life',
+  apiv1: 'http://192.168.202.102:5000',
 };
 
 //NEWS ELGEZIT
@@ -84,7 +79,6 @@ export const mlColors = {
 export const appName = 'Muras Life';
 export const socialLink = {
   insta: 'http://instagram.com/muras.life',
-  // teleg: 'http://instagram.com/muras.life',
 };
 export const version = '1.0.0';
 

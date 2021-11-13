@@ -1,119 +1,153 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   FlatList,
-  TouchableOpacity,
+  TextInput,
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
+  Platform,
+  TouchableHighlight,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {API, mlColors} from '../../../configs/config';
-export default function CategoryListModal({isCategory, close, info}) {
-  const [text, setQuery] = useState('');
-  const [data, setData] = useState([]);
+import axios from 'axios';
+import { API, apiUrl, mlColors } from '../configs/config';
+import { ScrollView } from 'react-native-gesture-handler';
+import { getToken } from '../utils/asyncStorage';
 
-  const fetchAPI = () => {
-    return fetch(`${API.apiv1}/api/category/`)
-      .then((response) => response.json())
-      .then((data) => {
-        setData(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+export default function CategoryListModal({ hide, close, info }) {
+  const [text, setQuery] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+
+  const fetchAllCategoriesAPI = async () => {
+    const token = await getToken();
+    const res = await axios.get(`${API.apiv1}/api/category/all`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-auth-token': token,
+      },
+    });
+    setCategories(res.data.result);
+  };
+
+  const fetchAllSubCategoriesAPI = async (category_id) => {
+    // const token = await getToken();
+    const res = await axios.get(
+      `${API.apiv1}/api/category/descendants/${category_id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          // 'x-auth-token': token,
+        },
+      },
+    );
+    setCategories(res.data.result);
   };
 
   useEffect(() => {
-    fetchAPI();
+    fetchAllCategoriesAPI();
+    return () => fetchAllCategoriesAPI();
   }, []);
 
-  const _handleSelected = (item) => {
-    console.log('item', item);
-    info(item);
-    close();
+  const _handleSelected = async (item) => {
+    if (item?.parent === null) {
+      await fetchAllCategoriesAPI(item._id);
+      info(item);
+    } else {
+      await fetchAllSubCategoriesAPI(item._id);
+      info(item);
+      close();
+    }
   };
-
-  console.log('cat', data);
 
   return (
     <Modal
       animationType="fade"
       transparent={false}
-      visible={isCategory}
-      onRequestClose={() => this.isCategory}>
-      <View
-        style={{
-          padding: 10,
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}>
-        <Text
-          style={{
-            fontSize: 30,
-            fontWeight: '800',
-            marginLeft: 10,
-          }}>
-          Категории
-        </Text>
-        <TouchableOpacity
-          title="Login"
-          style={{paddingRight: 10}}
-          onPress={() => _handlerClose()}>
-          <Icon name="close-outline" size={24} />
+      visible={hide}
+      onRequestClose={() => {
+        setSubCategories([]);
+        this.hide;
+      }}
+    >
+      <View style={styles.header}>
+        <Text style={styles.title}>Категории</Text>
+        <TouchableOpacity onPressOut={() => close()}>
+          <Icon name="close-outline" size={34} />
         </TouchableOpacity>
       </View>
+      {/*<ScrollView showsVerticalScrollIndicator={false}>*/}
+      {/*  {(subCategories ? subCategories : categories).map((item) => (*/}
+      {/*    <TouchableOpacity*/}
+      {/*      key={item._id}*/}
+      {/*      onPress={() => _handleSelected({ id: item._id, name: item.name })}*/}
+      {/*      style={styles.button}*/}
+      {/*    >*/}
+      {/*      <Text style={styles.button_title}>{item.name}</Text>*/}
+      {/*    </TouchableOpacity>*/}
+      {/*  ))}*/}
+      {/*</ScrollView>*/}
+
       <FlatList
-        style={{paddingLeft: 20, paddingRight: 20}}
-        showsVerticalScrollIndicator={false}
-        data={data}
-        keyExtractor={(item, index) => item._id}
-        renderItem={({item}) => (
-          <TouchableOpacity
-            style={styles.item}
-            onPress={() => _handleSelected(item)}>
-            <Icon name="close-outline" size={24} />
-            <Text style={styles.title}>{item.title}</Text>
-          </TouchableOpacity>
-        )}
+        data={categories}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal={false}
+        renderItem={({ item }) => {
+          return (
+            <>
+              <TouchableOpacity
+                key={item._id}
+                onPress={() =>
+                  _handleSelected({ id: item._id, name: item.name })
+                }
+                style={styles.button}
+              >
+                <Text style={styles.button_title}>{item.name}</Text>
+              </TouchableOpacity>
+            </>
+          );
+        }}
       />
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  item: {
-    backgroundColor: mlColors.light_blue,
-    padding: 10,
-    marginVertical: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   header: {
-    fontSize: 24,
-    backgroundColor: '#fff',
+    padding: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: Platform.OS === 'android' ? 0 : 40,
+    justifyContent: 'space-between',
   },
   title: {
-    fontSize: 18,
+    fontSize: 30,
+    fontWeight: 'bold',
   },
-  modalContainer: {
-    // flex: 1,
+  search: {
+    paddingLeft: 10,
+    paddingRight: 10,
   },
-  text_input: {
+  input: {
     height: 55,
     width: '100%',
     backgroundColor: 'rgba(236,239,241 ,1)',
     paddingLeft: 20,
     borderRadius: 10,
   },
-
-  metro_icon: {
-    // padding: 5,
-    // width: 28,
-    // height: 28,
-    justifyContent: 'center',
+  list: {
+    marginTop: 10,
+  },
+  button: {
+    flexDirection: 'row',
+    padding: 8,
+    marginLeft: 2,
+  },
+  button_title: {
     alignItems: 'center',
-    marginRight: 3,
-    // borderRadius: 5,
+    fontSize: 18,
+    marginLeft: 10,
   },
 });

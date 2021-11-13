@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   TextInput,
@@ -7,7 +7,8 @@ import {
   View,
   TouchableOpacity,
   Platform,
-  SafeAreaView,
+  FlatList,
+  TouchableHighlight,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
@@ -15,8 +16,11 @@ import {
   ITEM_HEIGHT,
   ITEM_WIDTH,
   dimensionWidth,
+  API,
 } from '../configs/config';
 import PostsLists from './PostsLists';
+import { getToken } from '../utils/asyncStorage';
+import axios from 'axios';
 
 export default function FindByCategoryModal({
   hide,
@@ -26,31 +30,74 @@ export default function FindByCategoryModal({
   scrollRef,
   refreshing,
   onRefresh,
+  navigation,
 }) {
   const [text, setQuery] = useState('');
+  const [postsByCategory, setPostsByCategory] = useState([]);
 
   const fdata = text
-    ? data.filter((item) => {
+    ? postsByCategory.filter((item) => {
         const itemData = item.title.toUpperCase();
         const textData = text.toUpperCase();
         return itemData.indexOf(textData) > -1;
       })
-    : data;
+    : postsByCategory;
+
+  const _handleChoosed = (sub_category) => {
+    getPostsByCategory(sub_category);
+    setPostsByCategory([]);
+  };
+
+  useEffect(() => {
+    getPostsByCategory();
+    return () => getPostsByCategory();
+  }, [postsByCategory]);
+
+  const getPostsByCategory = async (sub_category) => {
+    const descendant_id = sub_category?._id;
+
+    try {
+      const res = await axios.get(
+        `${API.apiv1}/api/category/find/${descendant_id}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      setPostsByCategory(res.data.result);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setPostsByCategory([]);
+    goBack();
+    this.hide();
+  };
+
+  function goBack() {
+    // getUserPostsList();
+    navigation.goBack(null);
+  }
 
   return (
     <Modal
       animationType="fade"
       transparent={false}
       visible={hide}
-      onRequestClose={() => this.hide}
-      presentationStyle="overFullScreen">
+      onRequestClose={handleCloseModal}
+      presentationStyle="overFullScreen"
+    >
       <View
         style={{
-          backgroundColor: mlColors.white,
+          backgroundColor: mlColors.dark_white,
           height: ITEM_HEIGHT * ITEM_WIDTH,
-        }}>
+        }}
+      >
         <View style={styles.header}>
-          <Text style={styles.title}>{info && info.title}</Text>
+          <Text style={styles.title}>{info && info.name}</Text>
           <TouchableOpacity onPressOut={() => close()}>
             <Icon name="close-outline" size={34} />
           </TouchableOpacity>
@@ -62,6 +109,27 @@ export default function FindByCategoryModal({
             placeholder="Поиск по названию"
             value={text}
             onChangeText={(text) => setQuery(text)}
+          />
+        </View>
+        <View style={{ paddingLeft: 10 }}>
+          <FlatList
+            data={data}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => {
+              return (
+                <>
+                  <TouchableHighlight
+                    underlayColor={mlColors.light_blue}
+                    onPress={() => _handleChoosed(item)}
+                    style={styles.category}
+                  >
+                    <Text style={styles.category_text}>{item.name}</Text>
+                  </TouchableHighlight>
+                </>
+              );
+            }}
           />
         </View>
         <PostsLists
@@ -129,5 +197,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 18,
     marginLeft: 10,
+  },
+  category: {
+    backgroundColor: mlColors.white,
+    marginEnd: 10,
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 5,
+    minWidth: 100,
+    maxWidth: 250,
+    margin: 2,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    elevation: 3,
+  },
+  category_text: {
+    color: mlColors.primary,
+    fontSize: 17,
+    fontFamily: 'SourceSansPro-SemiBold',
   },
 });

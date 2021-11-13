@@ -1,8 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   FlatList,
-  TextInput,
   StyleSheet,
   Text,
   View,
@@ -11,32 +10,50 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
-import {API, apiUrl} from '../configs/config';
-import {ScrollView} from 'react-native-gesture-handler';
-import {getToken} from '../utils/asyncStorage';
+import { API } from '../configs/config';
+import { getToken } from '../utils/asyncStorage';
 
-export default function CategoryModal({hide, close, info}) {
-  const [text, setQuery] = useState('');
-  const [data, setData] = useState([]);
+export default function CategoryModal({ hide, close, info }) {
+  const [categories, setCategories] = useState([]);
 
-  const fetchAPI = async () => {
+  const getAllCategories = async () => {
     const token = await getToken();
-    const res = await axios.get(`${API.apiv1}/api/category/`, {
+    const res = await axios.get(`${API.apiv1}/api/category/all`, {
       headers: {
         'Content-Type': 'application/json',
         'x-auth-token': token,
       },
     });
-    setData(res.data);
+    await setCategories(res.data.result);
   };
 
   useEffect(() => {
-    fetchAPI();
+    getAllCategories();
+    return () => getAllCategories();
   }, []);
 
-  const _handleSelected = (item) => {
-    info(item);
-    close();
+  const handleGetById = async (item) => {
+    if (item.parent !== null) {
+      info(item);
+      await getAllCategories();
+      close();
+    } else {
+      await getCategoryById(item._id);
+      info(item);
+    }
+  };
+
+  const getCategoryById = async (category_id) => {
+    const res = await axios.get(
+      `${API.apiv1}/api/category/descendants/${category_id}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    await setCategories([]);
+    await setCategories(res.data.result);
   };
 
   return (
@@ -44,28 +61,35 @@ export default function CategoryModal({hide, close, info}) {
       animationType="fade"
       transparent={false}
       visible={hide}
-      onRequestClose={() => this.hide}>
+      onRequestClose={() => {
+        setCategories([]);
+        this.hide;
+      }}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>Категории</Text>
         <TouchableOpacity onPressOut={() => close()}>
           <Icon name="close-outline" size={34} />
         </TouchableOpacity>
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {data &&
-          data.map((item) => {
-            return (
+      <FlatList
+        data={categories}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal={false}
+        renderItem={({ item }) => {
+          return (
+            <>
               <TouchableOpacity
                 key={item._id}
-                onPress={() =>
-                  _handleSelected({id: item._id, title: item.title})
-                }
-                style={styles.button}>
-                <Text style={styles.button_title}>{item.title}</Text>
+                onPress={() => handleGetById(item)}
+                style={styles.button}
+              >
+                <Text style={styles.button_title}>{item.name}</Text>
               </TouchableOpacity>
-            );
-          })}
-      </ScrollView>
+            </>
+          );
+        }}
+      />
     </Modal>
   );
 }

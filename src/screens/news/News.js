@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,11 +9,11 @@ import {
   FlatList,
 } from 'react-native';
 import axios from 'axios';
-import {dimensionHeight, dimensionWidth, newsUrl} from '../../configs/config';
+import { dimensionHeight, dimensionWidth, newsUrl } from '../../configs/config';
 import news1 from './news.json';
 import moment from 'moment';
 
-const News = ({navigation}) => {
+const News = ({ navigation }) => {
   const [news, setNews] = useState([]);
   useEffect(() => {
     getNews();
@@ -40,11 +40,12 @@ const News = ({navigation}) => {
     <FlatList
       data={news}
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({item}) => {
+      renderItem={({ item }) => {
         return (
           <TouchableOpacity
             key={item.id.toString()}
-            onPress={() => navigation.navigate('Details', {item})}>
+            onPress={() => navigation.navigate('Details', { item })}
+          >
             <View
               style={{
                 flex: 1,
@@ -56,12 +57,12 @@ const News = ({navigation}) => {
                 borderRadius: 12,
                 shadowColor: 'black',
                 shadowOpacity: 0.08,
-                shadowOffset: {width: 0, height: 3},
-                shadowRadius: 10,
+                shadowOffset: { width: 0, height: 3 },
                 elevation: 1,
-              }}>
+              }}
+            >
               <Image
-                source={{uri: item.jetpack_featured_media_url}}
+                source={{ uri: item.jetpack_featured_media_url }}
                 style={{
                   width: dimensionWidth / 3,
                   height: dimensionHeight / 7,
@@ -78,15 +79,16 @@ const News = ({navigation}) => {
                   borderRadius: 12,
                   shadowColor: 'black',
                   shadowOpacity: 0.08,
-                  shadowOffset: {width: 0, height: 3},
-                  shadowRadius: 10,
+                  shadowOffset: { width: 0, height: 3 },
                   elevation: 1,
-                }}>
+                }}
+              >
                 <Text
                   style={{
                     fontWeight: '500',
                     marginBottom: 10,
-                  }}>
+                  }}
+                >
                   {item.title.rendered}
                 </Text>
                 {/* NEED TO UPDATE DATE TO READABLE */}
@@ -96,7 +98,8 @@ const News = ({navigation}) => {
                     // marginBottom: 10,
                     flex: 1,
                     alignItems: 'flex-end',
-                  }}>
+                  }}
+                >
                   {moment(item.date).format()}
                 </Text>
               </View>

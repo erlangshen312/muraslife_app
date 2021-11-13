@@ -15,7 +15,7 @@ import moment from 'moment';
 import momentDurationFormatSetup from 'moment-duration-format';
 // import {snack} from '../../../utils/snack';
 
-export default function PostLists({ posts, getUserPostsList }) {
+export default function PostLists({ posts }) {
   const navigation = useNavigation();
 
   const timeLeft = (item) => {
@@ -45,11 +45,6 @@ export default function PostLists({ posts, getUserPostsList }) {
           },
         },
         {
-          text: 'Изменить',
-          onPress: () =>
-            navigation.navigate('Update', { item, getUserPostsList }),
-        },
-        {
           text: 'Удалить',
           destructive: true,
           onPress: () => _handleDeletePost(item._id),
@@ -72,7 +67,6 @@ export default function PostLists({ posts, getUserPostsList }) {
         `${API.apiv1}/api/posts/post/${post_id}`,
         config,
       );
-      getUserPostsList();
     } catch (error) {
       const warning = error.response.data.errors;
       console.error(warning);

@@ -7,7 +7,7 @@ import {
   Text,
   Image,
 } from 'react-native';
-import {ITEM_WIDTH, mlColors, ITEM_HEIGHT} from '../../../configs/config';
+import { ITEM_WIDTH, mlColors, ITEM_HEIGHT } from '../../../configs/config';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const Search = () => {
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderColor: mlColors.dark_white,
     borderWidth: 2,
+    margin: 10,
   },
   icon: {
     color: mlColors.light_brown,

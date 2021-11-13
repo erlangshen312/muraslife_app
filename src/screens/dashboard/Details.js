@@ -135,15 +135,15 @@ export default function Details({ route, navigation }) {
           </TouchableOpacity>
         </View> */}
         <View style={styles.card_footer}>
-          <TouchableOpacity style={styles.card_footer_info}>
-            <Image
-              style={styles.card_footer_info_avatar}
-              source={
-                item.avatar ? { uri: API.apiv1 + '/' + item.avatar } : ''
-              }
-            />
-            <Text style={styles.card_footer_info_name}>{item.name}</Text>
-          </TouchableOpacity>
+          {/*<TouchableOpacity style={styles.card_footer_info}>*/}
+          {/*  <Image*/}
+          {/*    style={styles.card_footer_info_avatar}*/}
+          {/*    source={*/}
+          {/*      item.avatar ? { uri: API.apiv1 + '/' + item.avatar } : ''*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*  <Text style={styles.card_footer_info_name}>{item.name}</Text>*/}
+          {/*</TouchableOpacity>*/}
         </View>
       </View>
       <View style={styles.conversation}>

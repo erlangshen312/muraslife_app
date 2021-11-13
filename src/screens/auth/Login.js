@@ -1,116 +1,109 @@
-import React, { useState, useContext } from "react";
-import axios from "axios";
+import React, { useState, useContext } from 'react';
+import axios from 'axios';
 import {
-  StyleSheet,
   Text,
   View,
   TextInput,
   KeyboardAvoidingView,
   TouchableOpacity,
-} from "react-native";
-import { AuthContext } from "../../AuthContext";
+} from 'react-native';
+import { AuthContext } from '../../AuthContext';
 
-import { mlColors, API } from "../../configs/config";
-import { setToken } from "../../utils/asyncStorage";
+import { mlColors, API } from '../../configs/config';
+import { setAuthData, setToken } from '../../utils/asyncStorage';
+import styled from 'styled-components';
 
 const Login = () => {
-  const { signIn } = useContext(AuthContext);
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [warning, setWarning] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [warning, setWarning] = useState('');
 
   const onLoginHandler = async () => {
-    // const method = {method: 'POST'};
+    setWarning('');
+
     const config = {
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     };
-    const body = JSON.stringify({ email, password });
-    //ИСПРАВИТЬ ПРОВЕРКУ
-    if (email.length === "" || password.length === "") {
-      return setWarning("Укажите почту");
+
+    if (email === '' || password === '') {
+      return setWarning('Пустые поля! Заполните их!');
     }
+    //ИСПРАВИТЬ ПРОВЕРКУ
+    if (email.length === '' || password.length === '') {
+      return setWarning('Укажите почту');
+    }
+    const body = JSON.stringify({ email, password });
     try {
-      const res = await axios.post(`${API.apiv1}/api/auth`, body, config);
-      try {
-        await setToken(res.data.token);
-        signIn();
-      } catch (err) {
-        console.log("RESPONSE ERROR:", err);
-        console.warn(err);
-      }
+      const res = await axios.post(
+        `${API.apiv1}/api/users/login`,
+        body,
+        config,
+      );
+      await setToken(res.data.token);
+      await setAuthData(res.data.user);
+      signIn();
     } catch (error) {
-      console.log("ERROR IN LOGIN:", error);
-      const warning = error.response.data.errors.map((er) => er.msg);
-      setWarning(warning);
+      const warn = error.response.data.errors;
+      setWarning(warn);
     }
   };
   return (
-    <KeyboardAvoidingView behavior="padding">
-      <View style={styles.input_container}>
-        <Text style={styles.error}>{warning}</Text>
-        <TextInput
+    <KeyboardWrapper behavior="padding">
+      <View>
+        <Warning>{warning}</Warning>
+        <InputBase
           autoCapitalize="none"
           autoCorrect={false}
-          keyboardType={"email-address"}
-          style={styles.text_input}
-          placeholder="email@mail.com"
+          keyboardType={'email-address'}
+          placeholder="email или номер телефона"
           value={email}
           onChangeText={(text) => setEmail(text)}
         />
-        <TextInput
-          style={styles.text_input}
-          placeholder="********"
+        <InputBase
+          placeholder="пароль"
           secureTextEntry
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
       </View>
-      <View style={styles.button_container}>
-        <TouchableOpacity
-          title="Login"
-          style={styles.button}
-          onPress={() => onLoginHandler()}
-        >
-          <Text style={styles.text_button}>ВОЙТИ</Text>
-        </TouchableOpacity>
+      <View>
+        <LoginButton title="Login" onPress={() => onLoginHandler()}>
+          <LoginText>Войти</LoginText>
+        </LoginButton>
       </View>
-    </KeyboardAvoidingView>
+    </KeyboardWrapper>
   );
 };
 
 export default Login;
 
-const styles = StyleSheet.create({
-  text_input: {
-    height: 55,
-    backgroundColor: mlColors.white,
-    marginBottom: 15,
-    paddingLeft: 20,
-    borderRadius: 10,
-    borderWidth: 2,
-    borderColor: '#d0d0d0',
-    elevation: 2,
-  },
-  button: {
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: mlColors.white,
-    height: 55,
-    marginBottom: 20,
-    borderRadius: 10,
-    elevation: 2,
-  },
-  text_button: {
-    color:'#0052CC',
-    fontWeight: "700",
-  },
-  error: {
-    paddingTop: 10,
-    paddingBottom: 10,
-    marginLeft: 5,
-    color: mlColors.white,
-  },
-});
+const KeyboardWrapper = styled(KeyboardAvoidingView)``;
+
+const LoginButton = styled(TouchableOpacity)`
+  background-color: #1d77e8;
+  margin: 20px;
+  padding: 15px;
+  align-items: center;
+  border-radius: 30px;
+`;
+
+const LoginText = styled(Text)`
+  font-size: 17px;
+  color: #fff;
+  font-weight: 600;
+`;
+
+const InputBase = styled(TextInput)`
+  background-color: #f5f5f5;
+  margin-bottom: 10px;
+  min-height: 55px;
+  padding: 0 15px;
+  border-radius: 10px;
+`;
+
+const Warning = styled(Text)`
+  padding: 10px 0;
+  color: #c1a800;
+`;
