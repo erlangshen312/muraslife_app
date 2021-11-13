@@ -102,7 +102,6 @@ export default function ProfileImage({ bioData }) {
             height: 1,
           },
           shadowOpacity: 0.22,
-          // shadowRadius: 2.0,
           elevation: 1,
         }}
         onPress={() => pickSingle()}
@@ -141,7 +140,6 @@ const styles = StyleSheet.create({
       height: -20,
     },
     shadowOpacity: 0.1,
-    // shadowRadius: 10,
     elevation: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#fff',

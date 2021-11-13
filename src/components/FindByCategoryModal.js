@@ -208,18 +208,12 @@ const styles = StyleSheet.create({
     maxWidth: 250,
     margin: 2,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
     shadowOpacity: 0.1,
-    // shadowRadius: 1.41,
     elevation: 3,
   },
   category_text: {
     color: mlColors.primary,
     fontSize: 17,
-    // fontWeight: '600',
     fontFamily: 'SourceSansPro-SemiBold',
   },
 });

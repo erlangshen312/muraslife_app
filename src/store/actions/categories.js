@@ -15,6 +15,7 @@ import {
   SET_SUB_CATEGORY,
   SET_SUB_CATEGORY_ERROR,
 } from '../constants/types';
+import { useCallback } from 'react';
 
 //SAVE IN THE STORE ID CATEGORY
 export const setCategoryId = (item) => async (dispatch) => {
@@ -56,21 +57,25 @@ export const setSubCategoryId = (item) => async (dispatch) => {
 
 //GET CATEGORIES
 export const getCategories = () => async (dispatch) => {
-  try {
-    const res = await axios.get(`${API.apiv1}/api/category/all`);
-    dispatch({
-      type: GET_CATEGORIES,
-      payload: res?.data?.result,
+  await axios
+    .get(`${API.apiv1}/api/category/all`)
+    .then((response) => {
+      const categories = response.data?.result;
+      console.log('in action get categories: ', categories);
+      dispatch({
+        type: GET_CATEGORIES,
+        payload: categories,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: CATEGORY_ERROR,
+        payload: {
+          msg: err.response?.statusText,
+          status: err.response?.status,
+        },
+      });
     });
-  } catch (err) {
-    dispatch({
-      type: CATEGORY_ERROR,
-      payload: {
-        msg: err?.response?.statusText,
-        status: err?.response?.status,
-      },
-    });
-  }
 };
 
 //GET SUB_CATEGORIES

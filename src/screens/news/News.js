@@ -58,7 +58,6 @@ const News = ({ navigation }) => {
                 shadowColor: 'black',
                 shadowOpacity: 0.08,
                 shadowOffset: { width: 0, height: 3 },
-                // shadowRadius: 10,
                 elevation: 1,
               }}
             >
@@ -81,7 +80,6 @@ const News = ({ navigation }) => {
                   shadowColor: 'black',
                   shadowOpacity: 0.08,
                   shadowOffset: { width: 0, height: 3 },
-                  // shadowRadius: 10,
                   elevation: 1,
                 }}
               >

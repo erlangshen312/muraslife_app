@@ -3,8 +3,8 @@ import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { store } from './store/store';
-import SplashScreen from './components/SplashScreen';
-import { TabStackScreen, RootStack } from './routes/routes';
+import { SplashScreen } from './components/SplashScreen';
+import { TabStackScreen } from './routes/RootStack';
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,18 +15,6 @@ const App = () => {
     }, 1000);
   }, []);
 
-  const RootStackScreen = () => (
-    <RootStack.Navigator headerMode="none">
-      <RootStack.Screen
-        name="App"
-        component={TabStackScreen}
-        options={{
-          animationEnabled: false,
-        }}
-      />
-    </RootStack.Navigator>
-  );
-
   if (isLoading) {
     return <SplashScreen />;
   }
@@ -34,7 +22,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer initialRouteName="Dashboard">
-        <RootStackScreen />
+        <TabStackScreen />
       </NavigationContainer>
     </Provider>
   );
